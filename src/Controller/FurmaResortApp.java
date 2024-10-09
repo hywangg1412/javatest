@@ -1,0 +1,145 @@
+package Controller;
+
+import Service.CustomerService;
+import Service.EmployeeService;
+import View.AppTools;
+import View.Menu;
+
+
+public class FurmaResortApp extends Menu {
+    private static final String MENU_TILTE = "---- FURUMA RESORT ----";
+    private static final String[] MENU_OPTION =
+            {
+                    "Employee Management",
+                    "Customer Management",
+                    "Facility Management",
+                    "Booking Management",
+                    "Promotion Management",
+                    "Exit"};
+
+    private String errMsg;
+    private AppTools tools;
+
+    public FurmaResortApp() {
+        super(MENU_OPTION, MENU_TILTE);
+        errMsg = "-> Invalid Input, Try Again";
+        tools = new AppTools();
+    }
+
+    @Override
+    public void execute(int n) {
+        switch (n) {
+            case 1 -> employeeManagementMenu();
+            case 2 -> customerManagement();
+            case 3 -> facilityManagement();
+            case 4 -> bookingManagement();
+            case 5 -> promotionManagement();
+            case 6 -> System.out.println("-> Exiting.....");
+            default -> System.out.println(errMsg);
+        }
+    }
+
+    public void employeeManagementMenu() {
+        EmployeeService empService = new EmployeeService();
+        String[] empOpt = {
+                "Display list employees",
+                "Add new employee",
+                "Edit employee",
+                "Back main menu"};
+        Menu empMenu = new Menu(empOpt, "---- EMPLOYEE MANAGEMENT ----") {
+            @Override
+            public void execute(int n) {
+                switch (n) {
+                    case 1 -> empService.display();
+                    case 2 -> empService.addEmployee();
+                    case 3 -> empService.edit();
+                    case 4 -> System.out.println("-> Redirecting....");
+                    default -> System.out.println(errMsg);
+                }
+            }
+        };
+        empMenu.run();
+    }
+
+    public void customerManagement() {
+        CustomerService customerService = new CustomerService();
+        String[] customerOpt = {
+                "Display list customer",
+                "Add new customer",
+                "Edit customer",
+                "Back main menu"};
+        Menu customerMenu = new Menu(customerOpt, "---- CUSTOMER MANAGEMENT ----") {
+            @Override
+            public void execute(int n) {
+                switch (n) {
+                    case 1 -> customerService.display();
+                    case 2 -> customerService.addCustomer();
+                    case 3 -> customerService.edit();
+                    case 4 -> System.out.println("-> Redirecting....");
+                    default -> System.out.println(errMsg);
+                }
+            }
+        };
+        customerMenu.run();
+    }
+
+    public void facilityManagement() {
+        String[] facilityOpt = {
+                "Display list facility",
+                "Add new facility",
+                "Display list facility maintance",
+                "Back main menu"};
+        Menu faciMenu = new Menu(facilityOpt, "---- FACILITY MANAGEMENT ----") {
+            @Override
+            public void execute(int n) {
+                switch (n) {
+                    case 4 -> System.out.println("-> Redirecting....");
+                    default -> System.out.println(errMsg);
+                }
+            }
+        };
+        faciMenu.run();
+    }
+
+    public void bookingManagement() {
+        String[] bookingOpt = {
+                "Add new booking",
+                "Display booking list",
+                "Create new contracts",
+                "Display contracts list",
+                "Edit contracts",
+                "Back main menu"};
+        Menu bookingMenu = new Menu(bookingOpt, "---- BOOKING MANAGEMENT ----") {
+            @Override
+            public void execute(int n) {
+                switch (n) {
+                    case 6 -> System.out.println("-> Redirecting....");
+                    default -> System.out.println(errMsg);
+                }
+            }
+        };
+        bookingMenu.run();
+    }
+
+    public void promotionManagement() {
+        String[] promoOpt = {
+                "Display list customers use service",
+                "Display list customers get voucher",
+                "Back main menu"};
+        Menu promoMenu = new Menu(promoOpt, "---- PROMOTION MANAGEMENT ----") {
+            @Override
+            public void execute(int n) {
+                switch (n) {
+                    case 3 -> System.out.println("-> Redirecting....");
+                    default -> System.out.println(errMsg);
+                }
+            }
+        };
+        promoMenu.run();
+    }
+
+    public static void main(String[] args) {
+        new FurmaResortApp().run();
+    }
+
+}

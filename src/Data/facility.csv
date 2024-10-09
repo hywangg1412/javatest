@@ -1,0 +1,9 @@
+1,SVVL-0001,Villa,200.0,217.6,6,day,Master,50.0,3
+2,SVVL-0002,Villa,215.0,2000.7,4,week,Master,60.0,2
+3,SVVL-0003,Villa,300.0,9156.7,8,month,Master,75.0,2
+4,SVHO-0001,House,120.0,156.4,4,day,Twin,1
+5,SVHO-0002,House,150.0,1000.9,6,week,Master,2
+6,SVHO-0003,House,187.9,4516.0,8,month,Master,3
+7,SVRO-0001,Room,50.0,22.3,1,day,wifi and parking
+8,SVRO-0002,Room,75.0,156.4,6,week,wifi and parking
+9,SVRO-0003,Room,100.0,643.1,4,month,wifi and parking
