@@ -2,6 +2,7 @@ package Controller;
 
 import Service.CustomerService;
 import Service.EmployeeService;
+import Service.FacilityService;
 import View.AppTools;
 import View.Menu;
 
@@ -52,7 +53,7 @@ public class FurmaResortApp extends Menu {
                 switch (n) {
                     case 1 -> empService.display();
                     case 2 -> empService.addEmployee();
-                    case 3 -> empService.edit();
+                    case 3 -> empService.update();
                     case 4 -> System.out.println("-> Redirecting....");
                     default -> System.out.println(errMsg);
                 }
@@ -74,7 +75,7 @@ public class FurmaResortApp extends Menu {
                 switch (n) {
                     case 1 -> customerService.display();
                     case 2 -> customerService.addCustomer();
-                    case 3 -> customerService.edit();
+                    case 3 -> customerService.update();
                     case 4 -> System.out.println("-> Redirecting....");
                     default -> System.out.println(errMsg);
                 }
@@ -84,15 +85,19 @@ public class FurmaResortApp extends Menu {
     }
 
     public void facilityManagement() {
+        FacilityService facilityService = new FacilityService();
         String[] facilityOpt = {
-                "Display list facility",
-                "Add new facility",
-                "Display list facility maintance",
+                "Add New Villa",
+                "Add New House",
+                "Add New Room",
                 "Back main menu"};
         Menu faciMenu = new Menu(facilityOpt, "---- FACILITY MANAGEMENT ----") {
             @Override
             public void execute(int n) {
                 switch (n) {
+                    case 1 -> facilityService.addVilla();
+                    case 2 -> facilityService.addHouse();
+                    case 3 -> facilityService.addRoom();
                     case 4 -> System.out.println("-> Redirecting....");
                     default -> System.out.println(errMsg);
                 }

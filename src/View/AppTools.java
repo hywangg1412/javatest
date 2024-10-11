@@ -29,6 +29,57 @@ public class AppTools {
         }
     }
 
+    // Validate double input with minimum value
+    public double validateDouble(String prompt, String errorMsg, double minValue) {
+        double value;
+        while (true) {
+            System.out.print(prompt + ": ");
+            String input = scanner.nextLine().trim();
+
+            if (input.isEmpty()) {
+                System.out.println(errorMsg + " - Input cannot be empty.");
+                continue;
+            }
+
+            try {
+                value = Double.parseDouble(input);
+                if (value > minValue) {
+                    return value;
+                } else {
+                    System.out.println(errorMsg + " - Value must be greater than " + minValue + ".");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println(errorMsg + " - Please enter a valid number.");
+            }
+        }
+    }
+
+    // Validate integer input with optional minimum value
+    public int validateInteger(String prompt, String errorMsg, Integer minValue) {
+        int value;
+        while (true) {
+            System.out.print(prompt + ": ");
+            String input = scanner.nextLine().trim();
+
+            if (input.isEmpty()) {
+                System.out.println(errorMsg + " - Input cannot be empty.");
+                continue;
+            }
+
+            try {
+                value = Integer.parseInt(input);
+                if (minValue == null || value >= minValue) {
+                    return value;
+                } else {
+                    System.out.println(errorMsg + " - Value must be at least " + minValue + ".");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println(errorMsg + " - Please enter a valid integer.");
+            }
+        }
+    }
+
+
     // Normalize names
     public String normalizeName(String name) {
         String cleanedName = name.toLowerCase().replaceAll("[^\\p{L}\\d\\s]", "").trim();

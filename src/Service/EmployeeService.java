@@ -5,9 +5,9 @@ import Repository.EmployeeRepository;
 import View.AppTools;
 import View.Menu;
 
+import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.function.Predicate;
 
 public class EmployeeService implements IEmployeeService {
     private final EmployeeRepository empRepository;
@@ -63,14 +63,13 @@ public class EmployeeService implements IEmployeeService {
     }
 
     @Override
-    public void edit() {
+    public void update() {
         String editID = tools.validateID("Enter Employee ID Want To Edit", "ID Must Follow EMP-0000", "EMP-\\d{4}");
-        ArrayList<Employee> found = searchEmployee(emp -> emp.getID().equalsIgnoreCase(editID));
+        Employee foundEmp = findEmployeeByID(editID);
 
-        if (found.isEmpty()) {
+        if (foundEmp == null) {
             System.out.println("-> Not Found Employee With ID " + editID);
         } else {
-            Employee foundEmp = found.get(0);
             String[] editOptions = {
                     "Full Name", "Date of Birth", "CMND", "Gender",
                     "Phone Number", "Email", "Degree", "Position", "Salary", "Finish Editing"
@@ -105,6 +104,57 @@ public class EmployeeService implements IEmployeeService {
             }
         }
     }
+
+//    public void update() {
+//        String editID = tools.validateID("Enter Employee ID Want To Edit", "ID Must Follow EMP-0000", "EMP-\\d{4}");
+//        Employee foundEmp = findEmployeeByID(editID);
+//
+//        if (foundEmp == null) {
+//            System.out.println("-> Not Found Employee With ID " + editID);
+//        } else {
+//
+//            Field[] fields = foundEmp.getClass().getDeclaredFields();
+//            Field[] superFields = foundEmp.getClass().getSuperclass().getDeclaredFields();
+//
+//            for (int i = 0; i < superFields.length; i++) {
+//                System.out.println((i+1) + ". " + superFields[i].getName());
+//            }
+//
+//            for (int i = 0; i < fields.length; i++) {
+//                System.out.println((superFields.length + 1) + ". " + fields[i].getName());
+//            }
+//
+//            Menu<String> editMenu = new Menu<>(superFields + fields, "---- CUSTOMIZE EMPLOYEE INFORMATION ----") {
+//                @Override
+//                public void execute(int n) {
+//
+//                }
+//            };
+//            do {
+//                editMenu.run();
+//            } while (tools.validateStringInput("-> Do you want to continue editing employees (Y/N)", errMsg).equalsIgnoreCase("Y"));
+//
+//            if (tools.validateStringInput("-> Do you want to save changes to file (Y/N): ", errMsg).equalsIgnoreCase("Y")) {
+////                updateEmployee(foundEmp);
+//                save();
+//            }
+//        }
+//    }
+
+
+    //public void updateFeild(Employee e, Field field){
+//        field.setAccessible(true); // Allow Private Access
+//        try{
+//            if (field.getType() == String.class){
+//                String newValue = tools.validateStringInput("Enter New " + field.getName() + ": ",errMsg );
+//                field.set(newValue,e);
+//            } else if (field.getType() == double.class){
+//
+//            }
+//        } catch (Exception ex) {
+//            throw new RuntimeException(ex);
+//        }
+  //  }
 
     public void addEmployee() {
         do {
@@ -147,12 +197,13 @@ public class EmployeeService implements IEmployeeService {
         return currentEmp.stream().anyMatch(emp -> emp.getID().equalsIgnoreCase(ID));
     }
 
-    public ArrayList<Employee> searchEmployee(Predicate<Employee> emp) {
-        ArrayList<Employee> searchEmp = new ArrayList<>();
-        for (Employee e : currentEmp) {
-            if (emp.test(e)) searchEmp.add(e);
+    private Employee findEmployeeByID(String ID ){
+        for (Employee employee : currentEmp){
+            if (employee.getID().equalsIgnoreCase(ID)){
+                return employee;
+            }
         }
-        return searchEmp;
+        return null;
     }
 
     private void updateFullName(Employee employee) {

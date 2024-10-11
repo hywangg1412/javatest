@@ -1,4 +1,6 @@
 package Service;
 
-public interface IFacilityService extends Service{
+import Model.Facility;
+
+public interface IFacilityService extends Service<Facility>{
 }

@@ -19,6 +19,9 @@ public class FacilityRepository implements IFacilityRepository {
             String line;
             while ((line = br.readLine()) != null){
                 String[] data = line.split(",");
+                for (int i = 0; i < data.length; i++) {
+                    data[i] = data[i].trim();
+                }
                 if (data.length < 9){
                     continue;
                 }
@@ -61,30 +64,36 @@ public class FacilityRepository implements IFacilityRepository {
 
     @Override
     public void writeFile(LinkedHashMap<Facility, Integer> Facilities) {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(path+facilityPath))){
-            for (Map.Entry<Facility,Integer> entry : Facilities.entrySet()){
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(path + facilityPath,true))) {
+            for (Map.Entry<Facility, Integer> entry : Facilities.entrySet()) {
                 Facility facility = entry.getKey();
                 Integer usageCount = entry.getValue();
-                String line = facility.getFacilityID() + " " + facility.getFacilityName()
-                        + facility.getArea() + " " + facility.getRentalCost() + " " + facility.getMaxPeople()
-                        + " " + facility.getRentalType() + " ";
 
-                if (facility instanceof Villa){
+                StringBuilder line = new StringBuilder(facility.getFacilityID() + ", " + facility.getFacilityName()
+                        + ", " + facility.getArea() + ", " + facility.getRentalCost() + ", " + facility.getMaxPeople()
+                        + ", " + facility.getRentalType() + ", ");
+
+                if (facility instanceof Villa) {
                     Villa villa = (Villa) facility;
-                    line += villa.getRoomStandard() + " " + villa.getPoolArea() + " " + villa.getNumberOfFloor()
-                            + " " + usageCount ;
+                    line.append(villa.getRoomStandard()).append(", ")
+                            .append(villa.getPoolArea()).append(", ")
+                            .append(villa.getNumberOfFloor()).append(", ")
+                            .append(usageCount);
                 } else if (facility instanceof House) {
                     House house = (House) facility;
-                    line += house.getRoomStandard() + " " + house.getNumberOfFloor() + " " + usageCount;
-                } else if (facility instanceof  Room) {
+                    line.append(house.getRoomStandard()).append(", ")
+                            .append(house.getNumberOfFloor()).append(", ")
+                            .append(usageCount);
+                } else if (facility instanceof Room) {
                     Room room = (Room) facility;
-                    line += room.getFreeService() + " " + usageCount;
+                    line.append(room.getFreeService()).append(", ")
+                            .append(usageCount);
                 }
-                bw.write(line);
+                bw.write(line.toString());
                 bw.newLine();
             }
         } catch (IOException e) {
-            throw new RuntimeException("-> Error While Writing To File "+ e.getMessage());
+            throw new RuntimeException("-> Error While Writing To File " + e.getMessage());
         }
     }
 }

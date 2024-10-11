@@ -1,6 +1,7 @@
 package Service;
 
 import Model.Customer;
+import Model.Employee;
 import Repository.CustomerRepository;
 import View.AppTools;
 import View.Menu;
@@ -62,14 +63,13 @@ public class CustomerService implements ICustomerService {
     }
 
     @Override
-    public void edit() {
+    public void update() {
         String editID = tools.validateID("Enter Customer ID to Edit", "ID Must Follow CUS-0000", "CUS-\\d{4}");
-        ArrayList<Customer> found = searchCustomer(cus -> cus.getID().equalsIgnoreCase(editID));
+        Customer foundCus = findCustomerByID(editID);
 
-        if (found.isEmpty()) {
+        if (foundCus == null) {
             System.out.println("-> Not Found Customer With ID " + editID);
         } else {
-            Customer foundCus = found.get(0);
             String[] editOptions = {
                     "Full Name", "Date of Birth", "CMND", "Gender",
                     "Phone Number", "Email", "Address", "Customer Type", "Finish Editing"
@@ -121,17 +121,14 @@ public class CustomerService implements ICustomerService {
         return currentCustomer.stream().anyMatch(cus -> cus.getID().equalsIgnoreCase(ID));
     }
 
-
-    public ArrayList<Customer> searchCustomer(Predicate<Customer> criteria) {
-        ArrayList<Customer> searchResults = new ArrayList<>();
-        for (Customer customer : currentCustomer) {
-            if (criteria.test(customer)) {
-                searchResults.add(customer);
+    public Customer findCustomerByID(String id){
+        for (Customer customer : currentCustomer){
+            if (customer.getID().equalsIgnoreCase(id)){
+                return customer;
             }
         }
-        return searchResults;
+        return null;
     }
-
 
     public void addCustomer() {
         do {
