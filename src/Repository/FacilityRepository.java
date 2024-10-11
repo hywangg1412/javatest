@@ -12,7 +12,6 @@ import java.util.LinkedHashMap;
 
 public class FacilityRepository implements IFacilityRepository {
 
-
     @Override
     public LinkedHashMap<Facility, Integer> readFile() {
         LinkedHashMap<Facility, Integer> facilityList = new LinkedHashMap<>();
