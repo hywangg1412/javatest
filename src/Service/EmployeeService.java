@@ -106,7 +106,6 @@ public class EmployeeService implements IEmployeeService {
         }
     }
 
-    // Add employee with input validation
     public void addEmployee() {
         do {
             String ID;
@@ -132,7 +131,6 @@ public class EmployeeService implements IEmployeeService {
         } while (tools.validateStringInput("-> Do you want to continue adding employees (Y/N)", errMsg).equalsIgnoreCase("Y"));
     }
 
-    // Update an employee's information
     public void updateEmployee(Employee updatedEmployee) {
         for (int i = 0; i < currentEmp.size(); i++) {
             Employee emp = currentEmp.get(i);
@@ -145,12 +143,10 @@ public class EmployeeService implements IEmployeeService {
         System.out.println("-> Employee With ID " + updatedEmployee.getID() + " Is Not Found !!!");
     }
 
-    // Check for duplicate employee ID
     private boolean isDuplicateID(String ID) {
         return currentEmp.stream().anyMatch(emp -> emp.getID().equalsIgnoreCase(ID));
     }
 
-    // Search for employees based on a predicate
     public ArrayList<Employee> searchEmployee(Predicate<Employee> emp) {
         ArrayList<Employee> searchEmp = new ArrayList<>();
         for (Employee e : currentEmp) {
@@ -159,7 +155,6 @@ public class EmployeeService implements IEmployeeService {
         return searchEmp;
     }
 
-    // Update methods for individual fields
     private void updateFullName(Employee employee) {
         String newName = tools.validateStringInput("Enter New Full Name: ", errMsg);
         employee.setFullname(tools.normalizeName(newName));

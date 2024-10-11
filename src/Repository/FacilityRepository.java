@@ -6,9 +6,9 @@ import Model.House;
 import Model.Room;
 import Model.Villa;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.*;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class FacilityRepository implements IFacilityRepository {
 
@@ -61,6 +61,30 @@ public class FacilityRepository implements IFacilityRepository {
 
     @Override
     public void writeFile(LinkedHashMap<Facility, Integer> Facilities) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(path+facilityPath))){
+            for (Map.Entry<Facility,Integer> entry : Facilities.entrySet()){
+                Facility facility = entry.getKey();
+                Integer usageCount = entry.getValue();
+                String line = facility.getFacilityID() + " " + facility.getFacilityName()
+                        + facility.getArea() + " " + facility.getRentalCost() + " " + facility.getMaxPeople()
+                        + " " + facility.getRentalType() + " ";
 
+                if (facility instanceof Villa){
+                    Villa villa = (Villa) facility;
+                    line += villa.getRoomStandard() + " " + villa.getPoolArea() + " " + villa.getNumberOfFloor()
+                            + " " + usageCount ;
+                } else if (facility instanceof House) {
+                    House house = (House) facility;
+                    line += house.getRoomStandard() + " " + house.getNumberOfFloor() + " " + usageCount;
+                } else if (facility instanceof  Room) {
+                    Room room = (Room) facility;
+                    line += room.getFreeService() + " " + usageCount;
+                }
+                bw.write(line);
+                bw.newLine();
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("-> Error While Writing To File "+ e.getMessage());
+        }
     }
 }

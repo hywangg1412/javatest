@@ -104,7 +104,6 @@ public class CustomerService implements ICustomerService {
         }
     }
 
-    // Update an existing customer
     public void updateCustomer(Customer updatedCustomer) {
         for (int i = 0; i < currentCustomer.size(); i++) {
             Customer cus = currentCustomer.get(i);
@@ -117,12 +116,12 @@ public class CustomerService implements ICustomerService {
         System.out.println("-> Customer With ID " + updatedCustomer.getID() + " Is Not Found !!!");
     }
 
-    // Check for duplicate customer ID
+
     public boolean isDuplicateID(String ID) {
         return currentCustomer.stream().anyMatch(cus -> cus.getID().equalsIgnoreCase(ID));
     }
 
-    // Search for customers based on a predicate
+
     public ArrayList<Customer> searchCustomer(Predicate<Customer> criteria) {
         ArrayList<Customer> searchResults = new ArrayList<>();
         for (Customer customer : currentCustomer) {
@@ -133,7 +132,7 @@ public class CustomerService implements ICustomerService {
         return searchResults;
     }
 
-    // Add a new customer with input validation
+
     public void addCustomer() {
         do {
             String ID;
@@ -158,7 +157,7 @@ public class CustomerService implements ICustomerService {
         } while (tools.validateStringInput("-> Do you want to continue adding customers (Y/N)", errMsg).equalsIgnoreCase("Y"));
     }
 
-    // Individual update methods
+
     private void updateFullName(Customer customer) {
         String newName = tools.validateStringInput("Enter New Full Name: ", errMsg);
         customer.setFullname(tools.normalizeName(newName));
