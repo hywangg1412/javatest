@@ -12,13 +12,13 @@ import java.util.LinkedHashMap;
 public class FacilityService implements IFacilityService {
     private final FacilityRepository faciRepository;
     private final AppTools tools;
-    private final LinkedHashMap<Facility, Integer> facilityList;
+    private final LinkedHashMap<Facility, Integer> currentFacilities;
     private final String errMsg;
 
     public FacilityService() {
         faciRepository = new FacilityRepository();
         tools = new AppTools();
-        facilityList = faciRepository.readFile();
+        currentFacilities = faciRepository.readFile();
         errMsg = "-> Invalid Input, Try Again";
     }
 
@@ -27,39 +27,38 @@ public class FacilityService implements IFacilityService {
         System.out.printf("%-15s %-20s %-15s%n", "Facility ID", "Facility Name", "Usage Count");
         System.out.println("--------------------------------------------------------------");
 
-        for (Facility facility : facilityList.keySet()) {
-            Integer usageCount = facilityList.get(facility);
-            System.out.printf("%-15s %-20s %-15d%n",
-                    facility.getFacilityID(),
-                    facility.getFacilityName(),
-                    usageCount);
-        }
+        currentFacilities.forEach((facility, usageCount) ->
+                System.out.printf("%-15s %-20s %-15d%n",
+                        facility.getFacilityID(),
+                        facility.getFacilityName(),
+                        usageCount)
+        );
     }
-
 
     @Override
     public void add(Facility entity) {
-        facilityList.put(entity, 0);
+        currentFacilities.put(entity, 0);
         System.out.println("-> Add Facility Successfully!!");
     }
 
-    public void addVilla(){
+    public void addVilla() {
         addFacility("Villa", Villa.class);
         display();
     }
 
-    public void addHouse(){
+    public void addHouse() {
         addFacility("House", House.class);
         display();
     }
 
-    public void addRoom(){
+    public void addRoom() {
         addFacility("Room", Room.class);
         display();
     }
 
     public void addFacility(String facilityType, Class<? extends Facility> facilityClass) {
         String ID;
+
         do {
             do {
                 ID = tools.validateID(facilityType + " ID",
@@ -67,11 +66,12 @@ public class FacilityService implements IFacilityService {
                         "SV(VL|HO|RO)-\\d{4}");
 
                 if (isDuplicateID(ID)) {
-                    System.out.println("-> ID Already Exist , Try New One");
+                    System.out.println("-> ID Already Exist, Try New One");
                 }
             } while (isDuplicateID(ID));
+
             String facilityName = tools.validateStringInput(facilityType + " Name", errMsg);
-            double Area = tools.validateDouble("Area", errMsg, 0);
+            double area = tools.validateDouble("Area", errMsg, 30);
             double rentalCost = tools.validateDouble("Rental Cost", errMsg, 0);
             int maxPeople = tools.validateInteger("Max People", errMsg, 0);
             String rentalType = tools.validateStringInput("Rental Type", errMsg);
@@ -80,37 +80,43 @@ public class FacilityService implements IFacilityService {
 
             if (facilityClass == Villa.class) {
                 String roomStandard = tools.validateStringInput("Room Standard", errMsg);
-                double poolArea = tools.validateDouble("Pool Area", errMsg, 0);
+                double poolArea = tools.validateDouble("Pool Area", errMsg, 30);
                 int numberOfFloor = tools.validateInteger("Number Of Floor", errMsg, 0);
-                newFacility = new Villa(ID, facilityName, Area, rentalCost, maxPeople, rentalType, roomStandard, poolArea, numberOfFloor);
+                newFacility = new Villa(ID, facilityName, area, rentalCost, maxPeople, rentalType, roomStandard, poolArea, numberOfFloor);
 
             } else if (facilityClass == House.class) {
                 String roomStandard = tools.validateStringInput("Room Standard", errMsg);
                 int numberOfFloor = tools.validateInteger("Number Of Floor", errMsg, 0);
-                newFacility = new House(ID, facilityName, Area, rentalCost, maxPeople, rentalType, roomStandard, numberOfFloor);
+                newFacility = new House(ID, facilityName, area, rentalCost, maxPeople, rentalType, roomStandard, numberOfFloor);
             } else if (facilityClass == Room.class) {
                 String freeService = tools.validateStringInput("Free Service", errMsg);
-                newFacility = new Room(ID, facilityName, Area, rentalCost, maxPeople, rentalType, freeService);
+                newFacility = new Room(ID, facilityName, area, rentalCost, maxPeople, rentalType, freeService);
             }
-            if (newFacility != null){
+
+            if (newFacility != null) {
                 add(newFacility);
             }
+
         } while (tools.validateStringInput("-> Do You Want To Continue (Y/N)", "Invalid Input, Try Again").equalsIgnoreCase("Y"));
+
         if (tools.validateStringInput("-> Do you want to save changes to file (Y/N): ", errMsg).equalsIgnoreCase("Y")) {
             save();
         }
     }
 
+
+
     private boolean isDuplicateID(String ID) {
-        return facilityList.keySet().stream().anyMatch(facility -> facility.getFacilityID().equalsIgnoreCase(ID));
+        return currentFacilities.keySet().stream().anyMatch(facility -> facility.getFacilityID().equalsIgnoreCase(ID));
     }
 
 
     @Override
     public void save() {
-        faciRepository.writeFile(facilityList);
-        System.out.println("Facilities saved successfully.");
+        faciRepository.writeFile(currentFacilities);
+        System.out.println("-> Facilities saved to file successfully !!!");
     }
+
 
     @Override
     public void update() {
