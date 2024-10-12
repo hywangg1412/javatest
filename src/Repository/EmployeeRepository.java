@@ -28,7 +28,7 @@ public class EmployeeRepository implements IEmployeeRepository {
                 Employee employee = new Employee(
                         toString[0],
                         toString[1],
-                        AppTools.localDateToString(DOB), gender, toString[4],
+                        DOB, gender, toString[4],
                         toString[5], toString[6], toString[7], toString[8],
                         salary);
 
@@ -45,7 +45,7 @@ public class EmployeeRepository implements IEmployeeRepository {
         StringBuilder data = new StringBuilder();
         for (Employee employee : entities) {
             data.append(employee.getID()).append(",")
-                    .append(employee.getFullname()).append(",")
+                    .append(employee.getFullName()).append(",")
                     .append(employee.getDOB()).append(",")
                     .append(employee.isGender() ? "Male" : "Female").append(",")
                     .append(employee.getCMND()).append(",")

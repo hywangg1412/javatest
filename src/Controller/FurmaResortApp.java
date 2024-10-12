@@ -1,5 +1,6 @@
 package Controller;
 
+import Model.Employee;
 import Service.CustomerService;
 import Service.EmployeeService;
 import Service.FacilityService;
@@ -53,7 +54,11 @@ public class FurmaResortApp extends Menu {
                 switch (n) {
                     case 1 -> empService.display();
                     case 2 -> empService.addEmployee();
-                    case 3 -> empService.update();
+                    case 3 -> {
+                        String editID = tools.validateID("Enter Employee ID Want To Edit", "ID Must Follow EMP-0000", "EMP-\\d{4}");
+                        Employee foundEmp = empService.findByID(editID);
+                        empService.update(foundEmp);
+                    }
                     case 4 -> System.out.println("-> Redirecting....");
                     default -> System.out.println(errMsg);
                 }
@@ -75,7 +80,7 @@ public class FurmaResortApp extends Menu {
                 switch (n) {
                     case 1 -> customerService.display();
                     case 2 -> customerService.addCustomer();
-                    case 3 -> customerService.update();
+                    case 3 -> customerService.updateEMp();
                     case 4 -> System.out.println("-> Redirecting....");
                     default -> System.out.println(errMsg);
                 }

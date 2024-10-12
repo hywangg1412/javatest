@@ -27,7 +27,7 @@ public class CustomerRepository implements ICustomerRepository {
                     Customer customer = new Customer(
                             data[0],
                             data[1],
-                            AppTools.localDateToString(DOB),
+                            DOB,
                             gender,
                             data[4],
                             data[5],
@@ -51,7 +51,7 @@ public class CustomerRepository implements ICustomerRepository {
         StringBuilder data = new StringBuilder();
         for (Customer customer : entities) {
             data.append(customer.getID()).append(",")
-                    .append(customer.getFullname()).append(",")
+                    .append(customer.getFullName()).append(",")
                     .append(customer.getDOB()).append(",")
                     .append(customer.isGender() ? "Male" : "Female").append(",")
                     .append(customer.getCMND()).append(",")

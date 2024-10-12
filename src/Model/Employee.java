@@ -1,39 +1,41 @@
 package Model;
 
-public class Employee extends Person{
-    private String degree;
-    private String position;
-    private double salary;
+import java.time.LocalDate;
 
-    public Employee(String ID, String fullname, String DOB, boolean gender, String CMND, String phoneNumber, String email, String degree, String position, double salary) {
+public class Employee extends Person{
+    private String Degree;
+    private String Position;
+    private double Salary;
+
+    public Employee(String ID, String fullname, LocalDate DOB, boolean gender, String CMND, String phoneNumber, String email, String Degree, String position, double salary) {
         super(ID, fullname, DOB, gender, CMND, phoneNumber, email);
-        this.degree = degree;
-        this.position = position;
-        this.salary = salary;
+        this.Degree = Degree;
+        this.Position = position;
+        this.Salary = salary;
     }
 
     public String getDegree() {
-        return degree;
+        return Degree;
     }
 
-    public void setDegree(String degree) {
-        this.degree = degree;
+    public void setDegree(String Degree) {
+        this.Degree = Degree;
     }
 
     public String getPosition() {
-        return position;
+        return Position;
     }
 
     public void setPosition(String position) {
-        this.position = position;
+        this.Position = position;
     }
 
     public double getSalary() {
-        return salary;
+        return Salary;
     }
 
     public void setSalary(double salary) {
-            this.salary = salary;
+            this.Salary = salary;
     }
 
 

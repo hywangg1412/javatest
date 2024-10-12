@@ -31,19 +31,19 @@ public class EmployeeService implements IEmployeeService {
                     "ID", "Full Name", "DOB", "Gender", "CMND", "Phone", "Email", "Degree", "Position", "Salary");
             System.out.println("---------------------------------------------------------------------------------------------------");
 
-            for (Employee employee : currentEmp) {
-                System.out.printf("%-10s %-20s %-10s %-10s %-15s %-10s %-27s %-15s %-12s %-10.1f\n",
-                        employee.getID(),
-                        employee.getFullname(),
-                        employee.getDOB(),
-                        employee.isGender() ? "Male" : "Female",
-                        employee.getCMND(),
-                        employee.getPhoneNumber(),
-                        employee.getEmail(),
-                        employee.getDegree(),
-                        employee.getPosition(),
-                        employee.getSalary());
-            }
+            currentEmp.forEach(employee ->
+                    System.out.printf("%-10s %-20s %-10s %-10s %-15s %-10s %-27s %-15s %-12s %-10.1f\n",
+                            employee.getID(),
+                            employee.getFullName(),
+                            employee.getDOB(),
+                            employee.isGender() ? "Male" : "Female",
+                            employee.getCMND(),
+                            employee.getPhoneNumber(),
+                            employee.getEmail(),
+                            employee.getDegree(),
+                            employee.getPosition(),
+                            employee.getSalary())
+            );
             System.out.println("---------------------------------------------------------------------------------------------------");
         } else {
             System.out.println("-> The list is empty !!");
@@ -62,99 +62,69 @@ public class EmployeeService implements IEmployeeService {
         System.out.println("-> Employees saved to file successfully !!!");
     }
 
+
     @Override
-    public void update() {
-        String editID = tools.validateID("Enter Employee ID Want To Edit", "ID Must Follow EMP-0000", "EMP-\\d{4}");
-        Employee foundEmp = findEmployeeByID(editID);
+    public void update(Employee e) {
+        Field[] fields = e.getClass().getSuperclass().getDeclaredFields();
+        Field[] subFields = e.getClass().getDeclaredFields();
+        int totalField = fields.length + subFields.length;
+        boolean isEditing = true;
 
-        if (foundEmp == null) {
-            System.out.println("-> Not Found Employee With ID " + editID);
-        } else {
-            String[] editOptions = {
-                    "Full Name", "Date of Birth", "CMND", "Gender",
-                    "Phone Number", "Email", "Degree", "Position", "Salary", "Finish Editing"
-            };
+        while (isEditing) {
+            System.out.println("---- CUSTOMIZE EMPLOYEE -----");
+            for (int i = 0; i < fields.length; i++) {
+                System.out.println((i + 1) + ". " + fields[i].getName());
+            }
+            for (int j = 0; j < subFields.length; j++) {
+                System.out.println((fields.length + j + 1) + ". " + subFields[j].getName());
+            }
+            System.out.println((totalField + 1) + ". Finish Customize");
 
-            Menu<String> editMenu = new Menu<>(editOptions, "---- CUSTOMIZE EMPLOYEE INFORMATION ----") {
-                @Override
-                public void execute(int n) {
-                    switch (n) {
-                        case 1 -> updateFullName(foundEmp);
-                        case 2 -> updateDateOfBirth(foundEmp);
-                        case 3 -> updateCMND(foundEmp);
-                        case 4 -> updateGender(foundEmp);
-                        case 5 -> updatePhoneNumber(foundEmp);
-                        case 6 -> updateEmail(foundEmp);
-                        case 7 -> updateDegree(foundEmp);
-                        case 8 -> updatePosition(foundEmp);
-                        case 9 -> updateSalary(foundEmp);
-                        case 10 -> System.out.println("Finished editing.");
-                        default -> System.out.println(errMsg);
-                    }
-                }
-            };
+            int choice = tools.validateInteger("Choose Your Option", errMsg, 0);
 
-            do {
-                editMenu.run();
-            } while (tools.validateStringInput("-> Do you want to continue editing employees (Y/N)", errMsg).equalsIgnoreCase("Y"));
+            if (choice == totalField + 1) {
+                isEditing = false;
+                System.out.println("-> Finish Customize");
+                continue;
+            }
 
-            if (tools.validateStringInput("-> Do you want to save changes to file (Y/N): ", errMsg).equalsIgnoreCase("Y")) {
-                updateEmployee(foundEmp);
-                save();
+            Field selectedField;
+            if (choice <= fields.length) {
+                selectedField = fields[choice - 1];
+            } else {
+                selectedField = subFields[choice - fields.length - 1];
+            }
+
+            selectedField.setAccessible(true);
+            try {
+                updateField(selectedField, e);
+            } catch (IllegalAccessException ex) {
+                System.out.println("-> Error While Updating " + selectedField.getName());
             }
         }
     }
 
-//    public void update() {
-//        String editID = tools.validateID("Enter Employee ID Want To Edit", "ID Must Follow EMP-0000", "EMP-\\d{4}");
-//        Employee foundEmp = findEmployeeByID(editID);
-//
-//        if (foundEmp == null) {
-//            System.out.println("-> Not Found Employee With ID " + editID);
-//        } else {
-//
-//            Field[] fields = foundEmp.getClass().getDeclaredFields();
-//            Field[] superFields = foundEmp.getClass().getSuperclass().getDeclaredFields();
-//
-//            for (int i = 0; i < superFields.length; i++) {
-//                System.out.println((i+1) + ". " + superFields[i].getName());
-//            }
-//
-//            for (int i = 0; i < fields.length; i++) {
-//                System.out.println((superFields.length + 1) + ". " + fields[i].getName());
-//            }
-//
-//            Menu<String> editMenu = new Menu<>(superFields + fields, "---- CUSTOMIZE EMPLOYEE INFORMATION ----") {
-//                @Override
-//                public void execute(int n) {
-//
-//                }
-//            };
-//            do {
-//                editMenu.run();
-//            } while (tools.validateStringInput("-> Do you want to continue editing employees (Y/N)", errMsg).equalsIgnoreCase("Y"));
-//
-//            if (tools.validateStringInput("-> Do you want to save changes to file (Y/N): ", errMsg).equalsIgnoreCase("Y")) {
-////                updateEmployee(foundEmp);
-//                save();
-//            }
-//        }
-//    }
+    private void updateField(Field field, Employee e) throws IllegalAccessException {
+        String fieldName = field.getName();
 
-
-    //public void updateFeild(Employee e, Field field){
-//        field.setAccessible(true); // Allow Private Access
-//        try{
-//            if (field.getType() == String.class){
-//                String newValue = tools.validateStringInput("Enter New " + field.getName() + ": ",errMsg );
-//                field.set(newValue,e);
-//            } else if (field.getType() == double.class){
-//
-//            }
-//        } catch (Exception ex) {
-//            throw new RuntimeException(ex);
-//        }
-  //  }
+        if (fieldName.equalsIgnoreCase("DOB")) {
+            LocalDate DOB = tools.validateDateOfBirth("Enter New Value For Date Of Birth", errMsg);
+            field.set(e, DOB);
+            System.out.println(fieldName + " Updated Successfully !!!");
+        } else if (fieldName.equalsIgnoreCase("Salary")) {
+            double salary = tools.validateSalary("Employee Salary", errMsg);
+            field.set(e, salary);
+            System.out.println(fieldName + " Updated Successfully !!!");
+        } else if (fieldName.equalsIgnoreCase("Gender")) {
+            boolean isMale = tools.validateGender("Gender (Male (M) / Female (F))", errMsg).equals("Male");
+            field.set(e, isMale);
+            System.out.println(fieldName + " Updated Successfully !!!");
+        } else {
+            String newValue = tools.validateString("Enter New Value For " + fieldName + ": ", errMsg);
+            field.set(e, newValue);
+            System.out.println(fieldName + " Updated Successfully !!!");
+        }
+    }
 
     public void addEmployee() {
         do {
@@ -173,7 +143,7 @@ public class EmployeeService implements IEmployeeService {
             String position = tools.validateStringInput("Employee Position", errMsg);
             double salary = tools.validateSalary("Employee Salary", errMsg);
 
-            add(new Employee(ID, name, AppTools.localDateToString(DOB), isMale, CMND, phoneNum, email, degree, position, salary));
+            add(new Employee(ID, name, DOB, isMale, CMND, phoneNum, email, degree, position, salary));
 
             if (tools.validateStringInput("-> Do you want to save the employee data to file (Y/N)", errMsg).equalsIgnoreCase("Y")) {
                 save();
@@ -181,82 +151,129 @@ public class EmployeeService implements IEmployeeService {
         } while (tools.validateStringInput("-> Do you want to continue adding employees (Y/N)", errMsg).equalsIgnoreCase("Y"));
     }
 
-    public void updateEmployee(Employee updatedEmployee) {
-        for (int i = 0; i < currentEmp.size(); i++) {
-            Employee emp = currentEmp.get(i);
-            if (emp.getID().equals(updatedEmployee.getID())) {
-                currentEmp.set(i, updatedEmployee);
-                System.out.println("-> Employee With ID " + updatedEmployee.getID() + " Updated successfully !!!");
-                return;
-            }
-        }
-        System.out.println("-> Employee With ID " + updatedEmployee.getID() + " Is Not Found !!!");
-    }
 
     private boolean isDuplicateID(String ID) {
         return currentEmp.stream().anyMatch(emp -> emp.getID().equalsIgnoreCase(ID));
     }
 
-    private Employee findEmployeeByID(String ID ){
-        for (Employee employee : currentEmp){
-            if (employee.getID().equalsIgnoreCase(ID)){
+    @Override
+    public Employee findByID(String ID) {
+        for (Employee employee : currentEmp) {
+            if (employee.getID().equalsIgnoreCase(ID)) {
                 return employee;
             }
         }
         return null;
     }
-
-    private void updateFullName(Employee employee) {
-        String newName = tools.validateStringInput("Enter New Full Name: ", errMsg);
-        employee.setFullname(tools.normalizeName(newName));
-        System.out.println("Full Name " + updatedMsg);
-    }
-
-    private void updateDateOfBirth(Employee employee) {
-        LocalDate newDOB = tools.validateDateOfBirth("Enter New Date of Birth (yyyy-mm-dd): ", errMsg);
-        employee.setDOB(newDOB);
-        System.out.println("Date of Birth " + updatedMsg);
-    }
-
-    private void updateCMND(Employee employee) {
-        String newCMND = tools.validateStringInput("Enter New CMND: ", errMsg);
-        employee.setCMND(newCMND);
-        System.out.println("CMND " + updatedMsg);
-    }
-
-    private void updateGender(Employee employee) {
-        String newGender = tools.validateStringInput("Enter New Gender (Male/Female): ", errMsg);
-        employee.setGender(newGender.equalsIgnoreCase("Male"));
-        System.out.println("Gender " + updatedMsg);
-    }
-
-    private void updatePhoneNumber(Employee employee) {
-        String newPhoneNumber = tools.validateStringInput("Enter New Phone Number: ", errMsg);
-        employee.setPhoneNumber(newPhoneNumber);
-        System.out.println("Phone Number " + updatedMsg);
-    }
-
-    private void updateEmail(Employee employee) {
-        String newEmail = tools.validateStringInput("Enter New Email: ", errMsg);
-        employee.setEmail(newEmail);
-        System.out.println("Email " + updatedMsg);
-    }
-
-    private void updateDegree(Employee employee) {
-        String newDegree = tools.validateStringInput("Enter New Degree: ", errMsg);
-        employee.setDegree(newDegree);
-        System.out.println("Degree " + updatedMsg);
-    }
-
-    private void updatePosition(Employee employee) {
-        String newPosition = tools.validateStringInput("Enter New Position: ", errMsg);
-        employee.setPosition(newPosition);
-        System.out.println("Position " + updatedMsg);
-    }
-
-    private void updateSalary(Employee employee) {
-        double newSalary = tools.validateSalary("Enter New Salary: ", errMsg);
-        employee.setSalary(newSalary);
-        System.out.println("Salary " + updatedMsg);
-    }
 }
+
+//    private void updateFullName(Employee employee) {
+//        String newName = tools.validateStringInput("Enter New Full Name: ", errMsg);
+//        employee.setFullName(tools.normalizeName(newName));
+//        System.out.println("Full Name " + updatedMsg);
+//    }
+//
+//    private void updateDateOfBirth(Employee employee) {
+//        LocalDate newDOB = tools.validateDateOfBirth("Enter New Date of Birth (yyyy-mm-dd): ", errMsg);
+//        employee.setDOB(newDOB);
+//        System.out.println("Date of Birth " + updatedMsg);
+//    }
+//
+//    private void updateCMND(Employee employee) {
+//        String newCMND = tools.validateStringInput("Enter New CMND: ", errMsg);
+//        employee.setCMND(newCMND);
+//        System.out.println("CMND " + updatedMsg);
+//    }
+//
+//    private void updateGender(Employee employee) {
+//        String newGender = tools.validateStringInput("Enter New Gender (Male/Female): ", errMsg);
+//        employee.setGender(newGender.equalsIgnoreCase("Male"));
+//        System.out.println("Gender " + updatedMsg);
+//    }
+//
+//    private void updatePhoneNumber(Employee employee) {
+//        String newPhoneNumber = tools.validateStringInput("Enter New Phone Number: ", errMsg);
+//        employee.setPhoneNumber(newPhoneNumber);
+//        System.out.println("Phone Number " + updatedMsg);
+//    }
+//
+//    private void updateEmail(Employee employee) {
+//        String newEmail = tools.validateStringInput("Enter New Email: ", errMsg);
+//        employee.setEmail(newEmail);
+//        System.out.println("Email " + updatedMsg);
+//    }
+//
+//    private void updateDegree(Employee employee) {
+//        String newDegree = tools.validateStringInput("Enter New Degree: ", errMsg);
+//        employee.setDegree(newDegree);
+//        System.out.println("Degree " + updatedMsg);
+//    }
+//
+//    private void updatePosition(Employee employee) {
+//        String newPosition = tools.validateStringInput("Enter New Position: ", errMsg);
+//        employee.setPosition(newPosition);
+//        System.out.println("Position " + updatedMsg);
+//    }
+//
+//    private void updateSalary(Employee employee) {
+//        double newSalary = tools.validateSalary("Enter New Salary: ", errMsg);
+//        employee.setSalary(newSalary);
+//        System.out.println("Salary " + updatedMsg);
+//    }
+//
+//    public void updateEmployee(Employee updatedEmployee) {
+////        for (int i = 0; i < currentEmp.size(); i++) {
+////            Employee emp = currentEmp.get(i);
+////            if (emp.getID().equals(updatedEmployee.getID())) {
+////                currentEmp.set(i, updatedEmployee);
+////                System.out.println("-> Employee With ID " + updatedEmployee.getID() + " Updated successfully !!!");
+////                return;
+////            }
+////        }
+////        System.out.println("-> Employee With ID " + updatedEmployee.getID() + " Is Not Found !!!");
+////    }
+//
+//    }
+
+//    @Override
+//    public void update() {
+//        String editID = tools.validateID("Enter Employee ID Want To Edit", "ID Must Follow EMP-0000", "EMP-\\d{4}");
+//        Employee foundEmp = findByID(editID);
+//
+//        if (foundEmp == null) {
+//            System.out.println("-> Not Found Employee With ID " + editID);
+//        } else {
+//            String[] editOptions = {
+//                    "Full Name", "Date of Birth", "CMND", "Gender",
+//                    "Phone Number", "Email", "Degree", "Position", "Salary", "Finish Editing"
+//            };
+//
+//            Menu<String> editMenu = new Menu<>(editOptions, "---- CUSTOMIZE EMPLOYEE INFORMATION ----") {
+//                @Override
+//                public void execute(int n) {
+//                    switch (n) {
+//                        case 1 -> updateFullName(foundEmp);
+//                        case 2 -> updateDateOfBirth(foundEmp);
+//                        case 3 -> updateCMND(foundEmp);
+//                        case 4 -> updateGender(foundEmp);
+//                        case 5 -> updatePhoneNumber(foundEmp);
+//                        case 6 -> updateEmail(foundEmp);
+//                        case 7 -> updateDegree(foundEmp);
+//                        case 8 -> updatePosition(foundEmp);
+//                        case 9 -> updateSalary(foundEmp);
+//                        case 10 -> System.out.println("Finished editing.");
+//                        default -> System.out.println(errMsg);
+//                    }
+//                }
+//            };
+//
+//            do {
+//                editMenu.run();
+//            } while (tools.validateStringInput("-> Do you want to continue editing employees (Y/N)", errMsg).equalsIgnoreCase("Y"));
+//
+//            if (tools.validateStringInput("-> Do you want to save changes to file (Y/N): ", errMsg).equalsIgnoreCase("Y")) {
+//                updateEmployee(foundEmp);
+//                save();
+//            }
+//        }
+//    }

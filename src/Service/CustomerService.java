@@ -1,14 +1,12 @@
 package Service;
 
 import Model.Customer;
-import Model.Employee;
 import Repository.CustomerRepository;
 import View.AppTools;
 import View.Menu;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.function.Predicate;
 
 public class CustomerService implements ICustomerService {
     private final CustomerRepository customerRepository;
@@ -35,7 +33,7 @@ public class CustomerService implements ICustomerService {
             for (Customer customer : currentCustomer) {
                 System.out.printf("%-10s %-20s %-10s %-10s %-15s %-10s %-27s %-15s %-12s\n",
                         customer.getID(),
-                        customer.getFullname(),
+                        customer.getFullName(),
                         customer.getDOB(),
                         customer.isGender() ? "Male" : "Female",
                         customer.getCMND(),
@@ -63,7 +61,12 @@ public class CustomerService implements ICustomerService {
     }
 
     @Override
-    public void update() {
+    public void update(Customer enity) {
+
+    }
+
+
+    public void updateEMp() {
         String editID = tools.validateID("Enter Customer ID to Edit", "ID Must Follow CUS-0000", "CUS-\\d{4}");
         Customer foundCus = findCustomerByID(editID);
 
@@ -102,6 +105,11 @@ public class CustomerService implements ICustomerService {
                 save();
             }
         }
+    }
+
+    @Override
+    public Customer findByID(String ID) {
+        return null;
     }
 
     public void updateCustomer(Customer updatedCustomer) {
@@ -146,7 +154,7 @@ public class CustomerService implements ICustomerService {
             String address = tools.validateStringInput("Customer Address", errMsg);
             String type = tools.validateStringInput("Customer Type", errMsg);
 
-            add(new Customer(ID, name, AppTools.localDateToString(DOB), isMale, CMND, phoneNum, email, address, type));
+            add(new Customer(ID, name, DOB, isMale, CMND, phoneNum, email, address, type));
 
             if (tools.validateStringInput("-> Do you want to save the customer data to file (Y/N)", errMsg).equalsIgnoreCase("Y")) {
                 save();
@@ -157,7 +165,7 @@ public class CustomerService implements ICustomerService {
 
     private void updateFullName(Customer customer) {
         String newName = tools.validateStringInput("Enter New Full Name: ", errMsg);
-        customer.setFullname(tools.normalizeName(newName));
+        customer.setFullName(tools.normalizeName(newName));
         System.out.println("Full Name " + updatedMsg);
     }
 

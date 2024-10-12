@@ -1,12 +1,14 @@
 package Model;
 
+import java.time.LocalDate;
+
 public class Customer extends Person{
 
     private String address;
     private String customerType;
 
 
-    public Customer(String ID, String fullname, String DOB, boolean gender, String CMND, String phoneNumber, String email, String address, String customerType) {
+    public Customer(String ID, String fullname, LocalDate DOB, boolean gender, String CMND, String phoneNumber, String email, String address, String customerType) {
         super(ID, fullname, DOB, gender, CMND, phoneNumber, email);
         this.address = address;
         this.customerType = customerType;

@@ -7,24 +7,24 @@ import java.time.LocalDate;
 public abstract class Person {
 
     private String ID;
-    private String fullname;
+    private String fullName;
     private LocalDate DOB;
-    private boolean gender;
+    private boolean Gender;
     private String CMND;
     private String phoneNumber;
-    private String email;
+    private String Email;
 
     public Person() {
     }
 
-    public Person(String ID, String fullname, String DOB, boolean gender, String CMND, String phoneNumber, String email) {
+    public Person(String ID, String fullname, LocalDate DOB, boolean gender, String CMND, String phoneNumber, String email) {
         this.ID = ID;
-        this.fullname = fullname;
-        this.DOB = AppTools.parseDate(DOB);
-        this.gender = gender;
+        this.fullName = fullname;
+        this.DOB = DOB;
+        this.Gender = gender;
         this.CMND = CMND;
         this.phoneNumber = phoneNumber;
-        this.email = email;
+        this.Email = email;
     }
 
     public String getID() {
@@ -35,12 +35,12 @@ public abstract class Person {
         this.ID = ID;
     }
 
-    public String getFullname() {
-        return fullname;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setFullname(String fullname) {
-        this.fullname = fullname;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public LocalDate getDOB() {
@@ -52,11 +52,11 @@ public abstract class Person {
     }
 
     public boolean isGender() {
-        return gender;
+        return Gender;
     }
 
     public void setGender(boolean gender) {
-        this.gender = gender;
+        this.Gender = gender;
     }
 
     public String getCMND() {
@@ -76,10 +76,10 @@ public abstract class Person {
     }
 
     public String getEmail() {
-        return email;
+        return Email;
     }
 
     public void setEmail(String email) {
-        this.email = email;
+        this.Email = email;
     }
 }

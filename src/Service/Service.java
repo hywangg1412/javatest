@@ -7,6 +7,8 @@ public interface Service<T> {
 
     void save();
 
-    void update();
+    void update(T enity);
+
+    T findByID(String ID);
 
 }

@@ -119,6 +119,11 @@ public class FacilityService implements IFacilityService {
 
 
     @Override
-    public void update() {
+    public void update(Facility f) {
+    }
+
+    @Override
+    public Facility findByID(String ID) {
+        return null;
     }
 }
