@@ -5,6 +5,7 @@ import Repository.CustomerRepository;
 import View.AppTools;
 import View.Menu;
 
+import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -61,14 +62,16 @@ public class CustomerService implements ICustomerService {
     }
 
     @Override
-    public void update(Customer enity) {
+    public void update(Customer c) {
+        Field[] fields = c.getClass().getSuperclass().getDeclaredFields();
+        Field[] subFields = c.getClass().getFields();
 
     }
 
 
     public void updateEMp() {
         String editID = tools.validateID("Enter Customer ID to Edit", "ID Must Follow CUS-0000", "CUS-\\d{4}");
-        Customer foundCus = findCustomerByID(editID);
+        Customer foundCus = findByID(editID);
 
         if (foundCus == null) {
             System.out.println("-> Not Found Customer With ID " + editID);
@@ -109,6 +112,11 @@ public class CustomerService implements ICustomerService {
 
     @Override
     public Customer findByID(String ID) {
+        for (Customer customer : currentCustomer){
+            if (customer.getID().equalsIgnoreCase(ID)){
+                return customer;
+            }
+        }
         return null;
     }
 
@@ -129,14 +137,6 @@ public class CustomerService implements ICustomerService {
         return currentCustomer.stream().anyMatch(cus -> cus.getID().equalsIgnoreCase(ID));
     }
 
-    public Customer findCustomerByID(String id){
-        for (Customer customer : currentCustomer){
-            if (customer.getID().equalsIgnoreCase(id)){
-                return customer;
-            }
-        }
-        return null;
-    }
 
     public void addCustomer() {
         do {

@@ -104,12 +104,9 @@ public class FacilityService implements IFacilityService {
         }
     }
 
-
-
-    private boolean isDuplicateID(String ID) {
+    public boolean isDuplicateID(String ID) {
         return currentFacilities.keySet().stream().anyMatch(facility -> facility.getFacilityID().equalsIgnoreCase(ID));
     }
-
 
     @Override
     public void save() {
@@ -124,6 +121,15 @@ public class FacilityService implements IFacilityService {
 
     @Override
     public Facility findByID(String ID) {
+        try {
+            for (Facility facility : currentFacilities.keySet()){
+                if (facility.getFacilityID().equalsIgnoreCase(ID)){
+                    return facility;
+                }
+            }
+        }catch (Exception e){
+            System.out.println("-> ID Not Found");
+        }
         return null;
     }
 }

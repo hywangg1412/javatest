@@ -11,6 +11,7 @@ public abstract class Facility {
     private double rentalCost;
     private int maxPeople;
     private String rentalType;
+    private int usageCount;
 
     public Facility(String facilityID, String facilityName, double area, double rentalCost, int maxPeople, String rentalType) {
         this.facilityID = facilityID;
@@ -68,4 +69,19 @@ public abstract class Facility {
     public void setRentalType(String rentalType) {
         this.rentalType = rentalType;
     }
+
+    public int getUsageCount() {
+        return usageCount;
+    }
+
+    public void setUsageCount(int usageCount) {
+        this.usageCount = usageCount;
+    }
+
+    public String displayInfo() {
+        return String.format("Facility ID: %s, Name: %s, Area: %.2f, Rental Cost: %.2f, Max People: %d, Rental Type: %s, Usage Count: %d",
+                facilityID, facilityName, area, rentalCost, maxPeople, rentalType, usageCount);
+    }
+
+
 }

@@ -190,6 +190,87 @@ public class AppTools {
         }
     }
 
+    // Validate booking date
+    public LocalDate validateBookingDate(String prompt, String errorMsg) {
+        LocalDate parsedDate;
+        while (true) {
+            System.out.print(prompt + ": ");
+            String input = scanner.nextLine().trim();
+
+            if (input.isEmpty()) {
+                System.out.println(errorMsg + " - Input cannot be empty.");
+                continue;
+            }
+
+            try {
+                parsedDate = LocalDate.parse(input, DATE_FORMATTER);
+                if (isFutureDate(parsedDate)) {
+                    return parsedDate;
+                } else {
+                    System.out.println("The booking date must be in the future.");
+                }
+            } catch (DateTimeParseException e) {
+                System.out.println(errorMsg + " - Date must be in the format (yyyy-MM-dd)");
+            }
+        }
+    }
+
+    // Validate start date
+    public LocalDate validateStartDate(LocalDate bookingDate, String prompt, String errorMsg) {
+        LocalDate parsedDate;
+        while (true) {
+            System.out.print(prompt + ": ");
+            String input = scanner.nextLine().trim();
+
+            if (input.isEmpty()) {
+                System.out.println(errorMsg + " - Input cannot be empty.");
+                continue;
+            }
+
+            try {
+                parsedDate = LocalDate.parse(input, DATE_FORMATTER);
+                if (parsedDate.isAfter(bookingDate)) {
+                    return parsedDate;
+                } else {
+                    System.out.println("The start date must be after the booking date.");
+                }
+            } catch (DateTimeParseException e) {
+                System.out.println(errorMsg + " - Date must be in the format (yyyy-MM-dd)");
+            }
+        }
+    }
+
+    // Validate end date
+    public LocalDate validateEndDate(LocalDate startDate, String prompt, String errorMsg) {
+        LocalDate parsedDate;
+        while (true) {
+            System.out.print(prompt + ": ");
+            String input = scanner.nextLine().trim();
+
+            if (input.isEmpty()) {
+                System.out.println(errorMsg + " - Input cannot be empty.");
+                continue;
+            }
+
+            try {
+                parsedDate = LocalDate.parse(input, DATE_FORMATTER);
+                if (parsedDate.isAfter(startDate)) {
+                    return parsedDate;
+                } else {
+                    System.out.println("The end date must be after the start date.");
+                }
+            } catch (DateTimeParseException e) {
+                System.out.println(errorMsg + " - Date must be in the format (yyyy-MM-dd)");
+            }
+        }
+    }
+
+
+    // Check if the date is in the future
+    private boolean isFutureDate(LocalDate date) {
+        return date.isAfter(LocalDate.now());
+    }
+
     // Check if age is valid (18 years or older)
     private boolean isAgeValid(LocalDate BOD) {
         LocalDate today = LocalDate.now();

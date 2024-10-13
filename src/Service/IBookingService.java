@@ -1,4 +1,8 @@
 package Service;
 
-public interface IBookingService extends Service{
+import Model.Booking;
+
+import java.util.Set;
+
+public interface IBookingService extends Service<Booking>{
 }

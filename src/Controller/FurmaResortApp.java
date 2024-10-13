@@ -1,6 +1,7 @@
 package Controller;
 
 import Model.Employee;
+import Service.BookingService;
 import Service.CustomerService;
 import Service.EmployeeService;
 import Service.FacilityService;
@@ -112,6 +113,7 @@ public class FurmaResortApp extends Menu {
     }
 
     public void bookingManagement() {
+        BookingService bookingService = new BookingService();
         String[] bookingOpt = {
                 "Add new booking",
                 "Display booking list",
@@ -123,6 +125,8 @@ public class FurmaResortApp extends Menu {
             @Override
             public void execute(int n) {
                 switch (n) {
+                    case 1 -> bookingService.addBooking();
+                    case 2 -> bookingService.display();
                     case 6 -> System.out.println("-> Redirecting....");
                     default -> System.out.println(errMsg);
                 }

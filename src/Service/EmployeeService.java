@@ -13,7 +13,6 @@ public class EmployeeService implements IEmployeeService {
     private final EmployeeRepository empRepository;
     private final AppTools tools;
     private final String errMsg;
-    private final String updatedMsg;
     private final ArrayList<Employee> currentEmp;
 
     public EmployeeService() {
@@ -21,7 +20,6 @@ public class EmployeeService implements IEmployeeService {
         currentEmp = empRepository.readFile();
         tools = new AppTools();
         errMsg = "-> Invalid Input, Try Again";
-        updatedMsg = "Updated Successfully !!!";
     }
 
     @Override

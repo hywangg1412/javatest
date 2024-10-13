@@ -3,8 +3,9 @@ package Model;
 import View.AppTools;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 
-public class Booking {
+public class Booking implements Comparator<Booking> {
     private String bookingID;
     private LocalDate bookingDate;
     private LocalDate startDate;
@@ -68,4 +69,10 @@ public class Booking {
     public void setServiceID(String serviceID) {
         this.serviceID = serviceID;
     }
+
+    @Override
+    public int compare(Booking o1, Booking o2) {
+        return o1.getStartDate().compareTo(o2.startDate);
+    }
+
 }
