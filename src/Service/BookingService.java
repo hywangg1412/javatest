@@ -147,6 +147,4 @@ public class BookingService implements IBookingService {
         return faciID;
     }
 
-    public void createContracts() {
-    }
 }
