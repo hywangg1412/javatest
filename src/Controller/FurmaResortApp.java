@@ -1,10 +1,8 @@
 package Controller;
 
+import Model.Contract;
 import Model.Employee;
-import Service.BookingService;
-import Service.CustomerService;
-import Service.EmployeeService;
-import Service.FacilityService;
+import Service.*;
 import View.AppTools;
 import View.Menu;
 
@@ -96,6 +94,7 @@ public class FurmaResortApp extends Menu {
                 "Add New Villa",
                 "Add New House",
                 "Add New Room",
+                "Display Facility List",
                 "Back main menu"};
         Menu faciMenu = new Menu(facilityOpt, "---- FACILITY MANAGEMENT ----") {
             @Override
@@ -104,7 +103,8 @@ public class FurmaResortApp extends Menu {
                     case 1 -> facilityService.addVilla();
                     case 2 -> facilityService.addHouse();
                     case 3 -> facilityService.addRoom();
-                    case 4 -> System.out.println("-> Redirecting....");
+                    case 4 -> facilityService.display();
+                    case 5 -> System.out.println("-> Redirecting....");
                     default -> System.out.println(errMsg);
                 }
             }
@@ -114,6 +114,7 @@ public class FurmaResortApp extends Menu {
 
     public void bookingManagement() {
         BookingService bookingService = new BookingService();
+        ContractService contractService = new ContractService();
         String[] bookingOpt = {
                 "Add new booking",
                 "Display booking list",
@@ -127,6 +128,25 @@ public class FurmaResortApp extends Menu {
                 switch (n) {
                     case 1 -> bookingService.addBooking();
                     case 2 -> bookingService.display();
+                    case 3 -> contractService.addContract();
+                    case 4 -> contractService.display();
+                    case 5 -> {
+                        int editID = tools.validateInteger("Enter Contract ID to edit", errMsg, 0);
+                        Contract foundContract = contractService.findByContractNum(editID);
+                        if (foundContract == null) {
+                            System.out.println("-> Contract ID not found.");
+                            boolean createNew = tools.validateStringInput("Do you want to create a new contract? (y/n)", errMsg).equalsIgnoreCase("y");
+                            if (createNew) {
+                                System.out.println("-> Creating a new contract...");
+                                contractService.addContract();
+                            } else {
+                                System.out.println("-> No contract created.");
+                            }
+                        } else {
+                            contractService.update(foundContract);
+                        }
+                    }
+
                     case 6 -> System.out.println("-> Redirecting....");
                     default -> System.out.println(errMsg);
                 }
