@@ -79,7 +79,7 @@ public class FurmaResortApp extends Menu {
                 switch (n) {
                     case 1 -> customerService.display();
                     case 2 -> customerService.addCustomer();
-                    case 3 -> customerService.updateEMp();
+                    case 3 -> customerService.updateEmp();
                     case 4 -> System.out.println("-> Redirecting....");
                     default -> System.out.println(errMsg);
                 }

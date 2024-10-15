@@ -2,12 +2,15 @@ package Service;
 
 import Model.Booking;
 import Model.Contract;
+import Model.Facility;
 import Repository.BookingRepository;
 import Repository.ContractRepository;
+import Repository.FacilityRepository;
 import View.AppTools;
 
 import java.lang.reflect.Field;
 import java.sql.SQLOutput;
+import java.util.LinkedHashMap;
 import java.util.Set;
 
 public class ContractService implements IContactService {
@@ -15,12 +18,14 @@ public class ContractService implements IContactService {
     private final Set<Contract> contractList;
     private final ContractRepository contractRepository;
     private final Set<Booking> bookingList;
+
     private final BookingRepository bookingRepository;
     private final BookingService bookingService;
     private final String errMsg;
 
     public ContractService() {
         bookingService = new BookingService();
+
         tools = new AppTools();
 
         bookingRepository = new BookingRepository();
@@ -54,6 +59,7 @@ public class ContractService implements IContactService {
 
             String bookingID = tools.validateID("Booking ID", "Invalid ID, try again", "^BK\\d{3}$");
             Booking selectedBooking = findBookingByID(bookingID);
+
             if (selectedBooking == null) {
                 System.out.println("-> Booking not found.");
                 return;

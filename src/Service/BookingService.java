@@ -5,13 +5,15 @@ import Repository.BookingRepository;
 import View.AppTools;
 
 import java.time.LocalDate;
-import java.util.Set;
+import java.util.TreeSet;
 
 public class BookingService implements IBookingService {
-    private final Set<Booking> bookingList;
-    private final AppTools tools;
+    private final TreeSet<Booking> bookingList;
     private final BookingRepository bkRepository;
+
+    private final AppTools tools;
     private final String errMsg;
+
     private final CustomerService customerService;
     private final FacilityService facilityService;
 
@@ -31,11 +33,12 @@ public class BookingService implements IBookingService {
     public void display() {
         try {
             if (!bookingList.isEmpty()) {
-                System.out.printf("%-10s %-15s %-10s %-10s %-15s %-10s\n",
+                System.out.println("+------------+-----------------+--------------+--------------+-----------------+--------------+");
+                System.out.printf("| %-10s | %-15s | %-12s | %-12s | %-15s | %-12s |\n",
                         "Booking ID", "Booking Date", "Start Date", "End Date", "Customer ID", "Service ID");
-                System.out.println("--------------------------------------------------------------------------------");
+                System.out.println("+------------+-----------------+--------------+--------------+-----------------+--------------+");
                 for (Booking booking : bookingList) {
-                    System.out.printf("%-10s %-15s %-10s %-10s %-15s %-10s\n",
+                    System.out.printf("| %-10s | %-15s | %-12s | %-12s | %-15s | %-12s |\n",
                             booking.getBookingID(),
                             AppTools.localDateToString(booking.getBookingDate()),
                             AppTools.localDateToString(booking.getStartDate()),
@@ -43,7 +46,7 @@ public class BookingService implements IBookingService {
                             booking.getCustomerID(),
                             booking.getServiceID());
                 }
-                System.out.println("--------------------------------------------------------------------------------");
+                System.out.println("+------------+-----------------+--------------+--------------+-----------------+--------------+");
             } else {
                 System.out.println("-> The List Is Empty.");
             }
@@ -51,6 +54,7 @@ public class BookingService implements IBookingService {
             System.out.println("-> Error While Displaying Booking List: " + e.getMessage());
         }
     }
+
 
     @Override
     public void add(Booking booking) {
@@ -106,10 +110,10 @@ public class BookingService implements IBookingService {
         try {
             do {
                 customerService.display();
-                String cusID = getCustomerID();
+                String cusID = customerService.getCustomerID();
 
                 facilityService.display();
-                String faciID = getFacilityID();
+                String faciID = facilityService.getFacilityID();
 
                 String bookingID = tools.validateID("Booking ID", errMsg, "^BK\\d{3}$");
                 LocalDate bookingDate = tools.validateBookingDate("Booking Date", errMsg);
@@ -117,6 +121,7 @@ public class BookingService implements IBookingService {
                 LocalDate endDate = tools.validateEndDate(startDate, "End Date", errMsg);
 
                 add(new Booking(bookingID, AppTools.localDateToString(bookingDate), AppTools.localDateToString(startDate), AppTools.localDateToString(endDate), cusID, faciID));
+
 
                 if (tools.validateStringInput("-> Do you want to save changes to file (Y/N): ", errMsg).equalsIgnoreCase("Y")) {
                     save();
@@ -126,38 +131,6 @@ public class BookingService implements IBookingService {
             } while (tools.validateStringInput("Do You Want To Continue Adding Booking (Y/N)", errMsg).equalsIgnoreCase("Y"));
         } catch (Exception e) {
             System.out.println("-> Error While Adding Booking: " + e.getMessage());
-        }
-    }
-
-    private String getCustomerID() {
-        String cusID;
-        try {
-            do {
-                cusID = tools.validateID("Customer ID", errMsg, "CUS-\\d{4}");
-                if (customerService.findByID(cusID) == null) {
-                    System.out.println("-> ID Not Found, Try Again!");
-                }
-            } while (customerService.findByID(cusID) == null);
-            return cusID;
-        } catch (Exception e) {
-            System.out.println("-> Error While Getting Customer ID: " + e.getMessage());
-            return null;
-        }
-    }
-
-    private String getFacilityID() {
-        String faciID;
-        try {
-            do {
-                faciID = tools.validateID("Facility ID", "ID Must Follow SVxx-xxxx", "SV(VL|HO|RO)-\\d{4}");
-                if (facilityService.findByID(faciID) == null) {
-                    System.out.println("-> ID Not Found, Try Again!");
-                }
-            } while (facilityService.findByID(faciID) == null);
-            return faciID;
-        } catch (Exception e) {
-            System.out.println("-> Error While Getting Facility ID: " + e.getMessage());
-            return null;
         }
     }
 }

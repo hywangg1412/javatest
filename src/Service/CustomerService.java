@@ -157,12 +157,19 @@ public class CustomerService implements ICustomerService {
         }
     }
 
-    public boolean isDuplicateID(String ID) {
+    public String getCustomerID() {
+        String cusID;
         try {
-            return currentCustomer.stream().anyMatch(cus -> cus.getID().equalsIgnoreCase(ID));
+            do {
+                cusID = tools.validateID("Customer ID", errMsg, "CUS-\\d{4}");
+                if (findByID(cusID) == null) {
+                    System.out.println("-> ID Not Found, Try Again!");
+                }
+            } while (findByID(cusID) == null);
+            return cusID;
         } catch (Exception e) {
-            System.out.println("Error checking for duplicate ID: " + e.getMessage());
-            return false;
+            System.out.println("-> Error While Getting Customer ID: " + e.getMessage());
+            return null;
         }
     }
 
@@ -172,7 +179,7 @@ public class CustomerService implements ICustomerService {
                 String ID;
                 do {
                     ID = tools.validateID("Customer ID", "ID Must Follow CUS-0000", "CUS-\\d{4}");
-                } while (isDuplicateID(ID));
+                } while (findByID(ID) != null);
 
                 String name = tools.normalizeName(tools.validateStringInput("Customer Full Name", errMsg));
                 LocalDate DOB = tools.validateDateOfBirth("Customer Date Of Birth", errMsg);

@@ -83,10 +83,10 @@ public class FacilityService implements IFacilityService {
             do {
                 do {
                     ID = tools.validateID(facilityType + " ID", "ID Must Follow SVxx-xxxx", "SV(VL|HO|RO)-\\d{4}");
-                    if (isDuplicateID(ID)) {
+                    if (findByID(ID)!= null) {
                         System.out.println("-> ID Already Exist, Try New One");
                     }
-                } while (isDuplicateID(ID));
+                } while (findByID(ID)!= null);
 
                 String facilityName = tools.validateStringInput(facilityType + " Name", errMsg);
                 double area = tools.validateDouble("Area", errMsg, 30);
@@ -123,15 +123,6 @@ public class FacilityService implements IFacilityService {
         }
     }
 
-    public boolean isDuplicateID(String ID) {
-        try {
-            return currentFacilities.keySet().stream().anyMatch(facility -> facility.getFacilityID().equalsIgnoreCase(ID));
-        } catch (Exception e) {
-            System.out.println("Error checking for duplicate ID: " + e.getMessage());
-            return false;
-        }
-    }
-
     @Override
     public void save() {
         try {
@@ -159,5 +150,21 @@ public class FacilityService implements IFacilityService {
         }
         System.out.println("-> ID Not Found");
         return null;
+    }
+
+    public String getFacilityID() {
+        String faciID;
+        try {
+            do {
+                faciID = tools.validateID("Facility ID", "ID Must Follow SVxx-xxxx", "SV(VL|HO|RO)-\\d{4}");
+                if (findByID(faciID) == null) {
+                    System.out.println("-> ID Not Found, Try Again!");
+                }
+            } while (findByID(faciID) == null);
+            return faciID;
+        } catch (Exception e) {
+            System.out.println("-> Error While Getting Facility ID: " + e.getMessage());
+            return null;
+        }
     }
 }

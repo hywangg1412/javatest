@@ -8,9 +8,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class EmployeeRepository implements IEmployeeRepository {
-
-    public EmployeeRepository() {
-    }
+    public EmployeeRepository() {}
 
     @Override
     public ArrayList<Employee> readFile() {

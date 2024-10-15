@@ -4,17 +4,17 @@ import Model.Booking;
 import View.AppTools;
 
 import java.io.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.time.LocalDate;
+import java.util.TreeSet;
 
 public class BookingRepository implements IBookingRepository{
 
     @Override
-    public Set<Booking> readFile() {
-        Set<Booking> bookingSet = new HashSet<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(path + bookingPath))){
+    public TreeSet<Booking> readFile() {
+        TreeSet<Booking> bookingList = new TreeSet<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(path + bookingPath))) {
             String line;
-            while ((line = reader.readLine()) != null){
+            while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
                 if (data.length < 6) {
                     System.out.println("-> Skipping " + line);
@@ -28,16 +28,18 @@ public class BookingRepository implements IBookingRepository{
                         data[4],
                         data[5]
                 );
-                bookingSet.add(booking);
+                bookingList.add(booking);
             }
         } catch (IOException e) {
-            throw new RuntimeException(e.getMessage());
+            System.out.println("-> Error reading file: " + e.getMessage());
+            throw new RuntimeException(e);
         }
-        return bookingSet;
+        return bookingList;
     }
 
+
     @Override
-    public void writeFile(Set<Booking> entities) {
+    public void writeFile(TreeSet<Booking> entities) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(path + bookingPath))){
             for (Booking booking :entities){
                 writer.write(String.join(",",

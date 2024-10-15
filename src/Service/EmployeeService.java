@@ -146,7 +146,7 @@ public class EmployeeService implements IEmployeeService {
                 String ID;
                 do {
                     ID = tools.validateID("EmployeeID", "ID Must Follow EMP-0000", "EMP-\\d{4}");
-                } while (isDuplicateID(ID));
+                } while (findByID(ID) != null);
 
                 String name = tools.normalizeName(tools.validateStringInput("Employee Full Name", errMsg));
                 LocalDate DOB = tools.validateDateOfBirth("Employee Date Of Birth", errMsg);
@@ -169,9 +169,6 @@ public class EmployeeService implements IEmployeeService {
         } while (tools.validateStringInput("-> Do you want to continue adding employees (Y/N)", errMsg).equalsIgnoreCase("Y"));
     }
 
-    private boolean isDuplicateID(String ID) {
-        return currentEmp.stream().anyMatch(emp -> emp.getID().equalsIgnoreCase(ID));
-    }
 
     @Override
     public Employee findByID(String ID) {

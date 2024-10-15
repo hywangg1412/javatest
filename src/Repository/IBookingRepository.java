@@ -2,14 +2,14 @@ package Repository;
 
 import Model.Booking;
 
-import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
-public interface IBookingRepository extends Repository<Booking , Set<Booking>> {
+public interface IBookingRepository extends Repository<Booking , TreeSet<Booking>> {
 
     final String bookingPath = "\\Data\\booking.csv";
 
-    public Set<Booking> readFile();
+    public TreeSet<Booking> readFile();
 
-    public void writeFile(Set<Booking> entities);
+    public void writeFile(TreeSet<Booking> entities);
 }

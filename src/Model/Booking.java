@@ -4,8 +4,9 @@ import View.AppTools;
 
 import java.time.LocalDate;
 import java.util.Comparator;
+import java.util.Objects;
 
-public class Booking implements Comparator<Booking> {
+public class Booking implements Comparable<Booking> {
     private String bookingID;
     private LocalDate bookingDate;
     private LocalDate startDate;
@@ -21,6 +22,8 @@ public class Booking implements Comparator<Booking> {
         this.customerID = customerID;
         this.serviceID = serviceID;
     }
+
+
 
     public String getBookingID() {
         return bookingID;
@@ -71,8 +74,26 @@ public class Booking implements Comparator<Booking> {
     }
 
     @Override
-    public int compare(Booking o1, Booking o2) {
-        return o1.getStartDate().compareTo(o2.startDate);
+    public int compareTo(Booking o) {
+        int dateComparision = this.startDate.compareTo(o.startDate);
+        if (dateComparision == 0){
+            return this.bookingID.compareTo(o.bookingID);
+        }
+        return dateComparision;
+    }
+
+    // Override equals and hashCode to avoid duplicate entries
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Booking booking = (Booking) o;
+        return bookingID.equals(booking.bookingID);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(bookingID);
     }
 
 }
