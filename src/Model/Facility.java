@@ -1,5 +1,7 @@
 package Model;
 
+import java.util.Objects;
+
 public abstract class Facility {
 //    Các loại dịch vụ này sẽ bao có các thông tin: Mã dịch vụ, Tên dịch vụ, Diện tích sử dụng,
 //    Chi phí thuê, Số lượng người tối đa, Kiểu thuê (bao gồm thuê theo năm, tháng, ngày,
@@ -76,6 +78,24 @@ public abstract class Facility {
 
     public void setUsageCount(int usageCount) {
         this.usageCount = usageCount;
+    }
+
+    public void incrementUsageCount(){
+        this.usageCount++;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof Facility)) return false;
+        Facility other = (Facility) obj; // Ép kiểu
+        return this.facilityID != null && this.facilityID.equals(other.facilityID);
+    }
+
+    // Phương thức hashCode
+    @Override
+    public int hashCode() {
+        return Objects.hash(facilityID);
     }
 
     public String displayInfo() {

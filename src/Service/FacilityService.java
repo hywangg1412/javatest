@@ -7,12 +7,13 @@ import Model.Villa;
 import Repository.FacilityRepository;
 import View.AppTools;
 
-import java.util.LinkedHashMap;
+import java.sql.SQLOutput;
+import java.util.*;
 
 public class FacilityService implements IFacilityService {
     private final FacilityRepository faciRepository;
     private final AppTools tools;
-    private final LinkedHashMap<Facility, Integer> currentFacilities;
+    private LinkedHashMap<Facility, Integer> currentFacilities;
     private final String errMsg;
 
     public FacilityService() {
@@ -25,18 +26,27 @@ public class FacilityService implements IFacilityService {
     @Override
     public void display() {
         try {
-            System.out.printf("%-15s %-20s %-15s%n", "Facility ID", "Facility Name", "Usage Count");
-            System.out.println("--------------------------------------------------------------");
+            System.out.println("+-----------------+----------------------+-----------------+");
+            System.out.printf("| %-15s | %-20s | %-15s |%n", "Facility ID", "Facility Name", "Usage Count");
+            System.out.println("+-----------------+----------------------+-----------------+");
 
-            currentFacilities.forEach((facility, usageCount) ->
-                    System.out.printf("%-15s %-20s %-15d%n",
-                            facility.getFacilityID(),
-                            facility.getFacilityName(),
-                            usageCount)
-            );
+            for (Map.Entry<Facility, Integer> entry : currentFacilities.entrySet()) {
+                Facility facility = entry.getKey();
+                Integer usageCount = entry.getValue();
+                System.out.printf("| %-15s | %-20s | %-15d |%n",
+                        facility.getFacilityID(),
+                        facility.getFacilityName(),
+                        usageCount);
+            }
+            System.out.println("+-----------------+----------------------+-----------------+");
+
         } catch (Exception e) {
             System.out.println("Error displaying facilities: " + e.getMessage());
         }
+    }
+
+    public void sort(){
+
     }
 
     @Override
@@ -76,6 +86,7 @@ public class FacilityService implements IFacilityService {
         }
     }
 
+    // Class<? extends Facility> -> chi lop Facility hoac cac lop con cua facility
     public void addFacility(String facilityType, Class<? extends Facility> facilityClass) {
         try {
             String ID;
@@ -157,14 +168,33 @@ public class FacilityService implements IFacilityService {
         try {
             do {
                 faciID = tools.validateID("Facility ID", "ID Must Follow SVxx-xxxx", "SV(VL|HO|RO)-\\d{4}");
-                if (findByID(faciID) == null) {
+                Facility facility = findByID(faciID);
+                if (facility != null) {
+                    incrementUsageCount(facility);
+
+                    return faciID;
+                } else {
                     System.out.println("-> ID Not Found, Try Again!");
                 }
-            } while (findByID(faciID) == null);
-            return faciID;
+            } while (true);
         } catch (Exception e) {
             System.out.println("-> Error While Getting Facility ID: " + e.getMessage());
             return null;
+        }
+    }
+
+    public void incrementUsageCount(Facility facility){
+        try {
+            if (currentFacilities.containsKey(facility)){
+                int currentCount = currentFacilities.get(facility);
+                facility.incrementUsageCount();
+                currentFacilities.put(facility, currentCount + 1);
+                System.out.println("-> Usage Count Of " + facility.getFacilityID() + " Increased To: " + currentCount + 1);
+            } else {
+                System.out.println("-> Not Found Facility With ID - " + facility.getFacilityID());
+            }
+        } catch (Exception e){
+            System.out.println("-> Error While Increment Usage Count Of " + facility.getFacilityID());
         }
     }
 }

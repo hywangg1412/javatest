@@ -47,6 +47,7 @@ public class BookingService implements IBookingService {
                             booking.getServiceID());
                 }
                 System.out.println("+------------+-----------------+--------------+--------------+-----------------+--------------+");
+
             } else {
                 System.out.println("-> The List Is Empty.");
             }
@@ -105,6 +106,12 @@ public class BookingService implements IBookingService {
         }
         return null;
     }
+
+    @Override
+    public void sort() {
+
+    }
+
 
     public void addBooking() {
         try {

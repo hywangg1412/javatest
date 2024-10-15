@@ -3,7 +3,6 @@ package Service;
 import Model.Customer;
 import Repository.CustomerRepository;
 import View.AppTools;
-import View.Menu;
 
 import java.lang.reflect.Field;
 import java.time.LocalDate;
@@ -28,12 +27,12 @@ public class CustomerService implements ICustomerService {
     public void display() {
         try {
             if (!currentCustomer.isEmpty()) {
-                System.out.printf("%-10s %-20s %-10s %-10s %-15s %-10s %-27s %-15s %-12s\n",
+                System.out.println("+------------+----------------------+------------+------------+-----------------+------------+-----------------------------+-----------------+--------------+");
+                System.out.printf("| %-10s | %-20s | %-10s | %-10s | %-15s | %-10s | %-27s | %-15s | %-12s |\n",
                         "ID", "Full Name", "DOB", "Gender", "CMND", "Phone", "Email", "Address", "Customer Type");
-                System.out.println("---------------------------------------------------------------------------------------------------");
-
+                System.out.println("+------------+----------------------+------------+------------+-----------------+------------+-----------------------------+-----------------+--------------+");
                 for (Customer customer : currentCustomer) {
-                    System.out.printf("%-10s %-20s %-10s %-10s %-15s %-10s %-27s %-15s %-12s\n",
+                    System.out.printf("| %-10s | %-20s | %-10s | %-10s | %-15s | %-10s | %-27s | %-15s | %-12s |\n",
                             customer.getID(),
                             customer.getFullName(),
                             customer.getDOB(),
@@ -44,7 +43,8 @@ public class CustomerService implements ICustomerService {
                             customer.getAddress(),
                             customer.getCustomerType());
                 }
-                System.out.println("---------------------------------------------------------------------------------------------------");
+                System.out.println("+------------+----------------------+------------+------------+-----------------+------------+-----------------------------+-----------------+--------------+");
+
             } else {
                 System.out.println("-> The list is empty !!");
             }
@@ -52,6 +52,7 @@ public class CustomerService implements ICustomerService {
             System.out.println("Error displaying customers: " + e.getMessage());
         }
     }
+
 
     @Override
     public void add(Customer entity) {
@@ -75,55 +76,61 @@ public class CustomerService implements ICustomerService {
 
     @Override
     public void update(Customer c) {
-        // Implementation if needed
-    }
+        Field[] fields = c.getClass().getSuperclass().getDeclaredFields();
+        Field[] subFields = c.getClass().getDeclaredFields();
+        int totalField = fields.length + subFields.length;
+        boolean isEditing = true;
 
-    public void updateEmp() {
-        try {
-            String editID = tools.validateID("Enter Customer ID to Edit", "ID Must Follow CUS-0000", "CUS-\\d{4}");
-            Customer foundCus = findByID(editID);
-
-            if (foundCus == null) {
-                System.out.println("-> Not Found Customer With ID " + editID);
-            } else {
-                String[] editOptions = {
-                        "Full Name", "Date of Birth", "CMND", "Gender",
-                        "Phone Number", "Email", "Address", "Customer Type", "Finish Editing"
-                };
-
-                Menu<String> editMenu = new Menu<>(editOptions, "---- CUSTOMIZE CUSTOMER INFORMATION ----") {
-                    @Override
-                    public void execute(int n) {
-                        try {
-                            switch (n) {
-                                case 1 -> updateFullName(foundCus);
-                                case 2 -> updateDateOfBirth(foundCus);
-                                case 3 -> updateCMND(foundCus);
-                                case 4 -> updateGender(foundCus);
-                                case 5 -> updatePhoneNumber(foundCus);
-                                case 6 -> updateEmail(foundCus);
-                                case 7 -> updateAddress(foundCus);
-                                case 8 -> updateCustomerType(foundCus);
-                                case 9 -> System.out.println("Finished editing.");
-                                default -> System.out.println(errMsg);
-                            }
-                        } catch (Exception e) {
-                            System.out.println("Error updating customer: " + e.getMessage());
-                        }
-                    }
-                };
-
-                do {
-                    editMenu.run();
-                } while (tools.validateStringInput("-> Do you want to continue editing customers (Y/N)", errMsg).equalsIgnoreCase("Y"));
-
-                if (tools.validateStringInput("-> Do you want to save changes to file (Y/N): ", errMsg).equalsIgnoreCase("Y")) {
-                    updateCustomer(foundCus);
-                    save();
-                }
+        while (isEditing) {
+            System.out.println("---- CUSTOMIZE CUSTOMER -----");
+            for (int i = 0; i < fields.length; i++) {
+                System.out.println((i + 1) + ". " + fields[i].getName());
             }
-        } catch (Exception e) {
-            System.out.println("Error updating customer: " + e.getMessage());
+            for (int j = 0; j < subFields.length; j++) {
+                System.out.println((fields.length + j + 1) + ". " + subFields[j].getName());
+            }
+            System.out.println((totalField + 1) + ". Finish Customize");
+
+            int choice = tools.validateInteger("Choose Your Option", errMsg, 0);
+
+            if (choice == totalField + 1) {
+                isEditing = false;
+                System.out.println("-> Finish Customize");
+                continue;
+            }
+
+            Field selectedField;
+            if (choice <= fields.length) {
+                selectedField = fields[choice - 1];
+            } else {
+                selectedField = subFields[choice - fields.length - 1];
+            }
+            selectedField.setAccessible(true);
+            try {
+                if (selectedField.getType() == LocalDate.class) {
+                    LocalDate DOB = tools.validateDateOfBirth("Enter New Value For Date Of Birth", errMsg);
+                    selectedField.set(c, DOB);
+                    System.out.println(selectedField.getName() + " Updated Successfully !!!");
+                } else if (selectedField.getType() == double.class) {
+                    double salary = tools.validateSalary("Employee Salary", errMsg);
+                    selectedField.set(c, salary);
+                    System.out.println(selectedField.getName() + " Updated Successfully !!!");
+                } else if (selectedField.getType() == boolean.class) {
+                    boolean isMale = tools.validateGender("Gender (Male (M) / Female (F))", errMsg).equalsIgnoreCase("Male");
+                    selectedField.set(c, isMale);
+                    System.out.println(selectedField.getName() + " Updated Successfully !!!");
+                } else if (selectedField.getType() == String.class) {
+                    String newValue = tools.validateString("Enter New Value For " + selectedField.getName() + ": ", errMsg);
+                    selectedField.set(c, newValue);
+                    System.out.println(selectedField.getName() + " Updated Successfully !!!");
+                } else {
+                    System.out.println("-> Field Type Not Supported : " + selectedField.getName());
+                }
+            } catch (IllegalAccessException ex) {
+                System.out.println("-> Error While Updating " + selectedField.getName() + ": " + ex.getMessage());
+            } catch (Exception ex) {
+                System.out.println("-> Unexpected error: " + ex.getMessage());
+            }
         }
     }
 
@@ -136,25 +143,14 @@ public class CustomerService implements ICustomerService {
                 }
             }
         } catch (Exception e) {
-            System.out.println("Error finding customer by ID: " + e.getMessage());
+            System.out.println("-> Error finding customer by ID: " + e.getMessage());
         }
         return null;
     }
 
-    public void updateCustomer(Customer updatedCustomer) {
-        try {
-            for (int i = 0; i < currentCustomer.size(); i++) {
-                Customer cus = currentCustomer.get(i);
-                if (cus.getID().equals(updatedCustomer.getID())) {
-                    currentCustomer.set(i, updatedCustomer);
-                    System.out.println("-> Customer With ID " + updatedCustomer.getID() + " Updated successfully !!!");
-                    return;
-                }
-            }
-            System.out.println("-> Customer With ID " + updatedCustomer.getID() + " Is Not Found !!!");
-        } catch (Exception e) {
-            System.out.println("Error updating customer: " + e.getMessage());
-        }
+    @Override
+    public void sort() {
+
     }
 
     public String getCustomerID() {
@@ -201,83 +197,5 @@ public class CustomerService implements ICustomerService {
         } while (tools.validateStringInput("-> Do you want to continue adding customers (Y/N)", errMsg).equalsIgnoreCase("Y"));
     }
 
-    private void updateFullName(Customer customer) {
-        try {
-            String newName = tools.validateStringInput("Enter New Full Name: ", errMsg);
-            customer.setFullName(tools.normalizeName(newName));
-            System.out.println("Full Name " + updatedMsg);
-        } catch (Exception e) {
-            System.out.println("Error updating full name: " + e.getMessage());
-        }
-    }
 
-    private void updateDateOfBirth(Customer customer) {
-        try {
-            LocalDate newDOB = tools.validateDateOfBirth("Enter New Date of Birth (yyyy-mm-dd): ", errMsg);
-            customer.setDOB(newDOB);
-            System.out.println("Date of Birth " + updatedMsg);
-        } catch (Exception e) {
-            System.out.println("Error updating date of birth: " + e.getMessage());
-        }
-    }
-
-    private void updateCMND(Customer customer) {
-        try {
-            String newCMND = tools.validateStringInput("Enter New CMND: ", errMsg);
-            customer.setCMND(newCMND);
-            System.out.println("CMND " + updatedMsg);
-        } catch (Exception e) {
-            System.out.println("Error updating CMND: " + e.getMessage());
-        }
-    }
-
-    private void updateGender(Customer customer) {
-        try {
-            String newGender = tools.validateStringInput("Enter New Gender (Male/Female): ", errMsg);
-            customer.setGender(newGender.equalsIgnoreCase("Male"));
-            System.out.println("Gender " + updatedMsg);
-        } catch (Exception e) {
-            System.out.println("Error updating gender: " + e.getMessage());
-        }
-    }
-
-    private void updatePhoneNumber(Customer customer) {
-        try {
-            String newPhoneNumber = tools.validateStringInput("Enter New Phone Number: ", errMsg);
-            customer.setPhoneNumber(newPhoneNumber);
-            System.out.println("Phone Number " + updatedMsg);
-        } catch (Exception e) {
-            System.out.println("Error updating phone number: " + e.getMessage());
-        }
-    }
-
-    private void updateEmail(Customer customer) {
-        try {
-            String newEmail = tools.validateStringInput("Enter New Email: ", errMsg);
-            customer.setEmail(newEmail);
-            System.out.println("Email " + updatedMsg);
-        } catch (Exception e) {
-            System.out.println("Error updating email: " + e.getMessage());
-        }
-    }
-
-    private void updateAddress(Customer customer) {
-        try {
-            String newAddress = tools.validateStringInput("Enter New Address: ", errMsg);
-            customer.setAddress(newAddress);
-            System.out.println("Address " + updatedMsg);
-        } catch (Exception e) {
-            System.out.println("Error updating address: " + e.getMessage());
-        }
-    }
-
-    private void updateCustomerType(Customer customer) {
-        try {
-            String newType = tools.validateStringInput("Enter New Customer Type: ", errMsg);
-            customer.setCustomerType(newType);
-            System.out.println("Customer Type " + updatedMsg);
-        } catch (Exception e) {
-            System.out.println("Error updating customer type: " + e.getMessage());
-        }
-    }
 }

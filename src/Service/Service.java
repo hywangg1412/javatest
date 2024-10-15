@@ -11,4 +11,6 @@ public interface Service<T> {
 
     T findByID(String ID);
 
+    void sort();
+
 }

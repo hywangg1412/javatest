@@ -25,24 +25,25 @@ public class EmployeeService implements IEmployeeService {
     public void display() {
         try {
             if (!currentEmp.isEmpty()) {
-                System.out.printf("%-10s %-20s %-10s %-10s %-15s %-10s %-27s %-15s %-12s %-10s\n",
+                System.out.println("+----------+----------------------+------------+------------+-----------------+------------+-----------------------------+-----------------+--------------+----------+");
+                System.out.printf("| %-8s | %-20s | %-10s | %-10s | %-15s | %-12s | %-27s | %-15s | %-12s | %-8s |\n",
                         "ID", "Full Name", "DOB", "Gender", "CMND", "Phone", "Email", "Degree", "Position", "Salary");
-                System.out.println("---------------------------------------------------------------------------------------------------");
+                System.out.println("+----------+----------------------+------------+------------+-----------------+------------+-----------------------------+-----------------+--------------+----------+");
+                for (Employee employee : currentEmp) {
+                    System.out.printf("| %-8s | %-20s | %-10s | %-10s | %-15s | %-12s | %-27s | %-15s | %-12s | %-8.1f |\n",
+                            employee.getID(),
+                            employee.getFullName(),
+                            employee.getDOB(),
+                            employee.isGender() ? "Male" : "Female",
+                            employee.getCMND(),
+                            employee.getPhoneNumber(),
+                            employee.getEmail(),
+                            employee.getDegree(),
+                            employee.getPosition(),
+                            employee.getSalary());
+                }
+                System.out.println("+----------+----------------------+------------+------------+-----------------+------------+-----------------------------+-----------------+--------------+----------+");
 
-                currentEmp.forEach(employee ->
-                        System.out.printf("%-10s %-20s %-10s %-10s %-15s %-10s %-27s %-15s %-12s %-10.1f\n",
-                                employee.getID(),
-                                employee.getFullName(),
-                                employee.getDOB(),
-                                employee.isGender() ? "Male" : "Female",
-                                employee.getCMND(),
-                                employee.getPhoneNumber(),
-                                employee.getEmail(),
-                                employee.getDegree(),
-                                employee.getPosition(),
-                                employee.getSalary())
-                );
-                System.out.println("---------------------------------------------------------------------------------------------------");
             } else {
                 System.out.println("-> The list is empty !!");
             }
@@ -102,41 +103,32 @@ public class EmployeeService implements IEmployeeService {
             } else {
                 selectedField = subFields[choice - fields.length - 1];
             }
-
             selectedField.setAccessible(true);
             try {
-                updateField(selectedField, e);
+                if (selectedField.getType() == LocalDate.class) {
+                    LocalDate DOB = tools.validateDateOfBirth("Enter New Value For Date Of Birth", errMsg);
+                    selectedField.set(e, DOB);
+                    System.out.println(selectedField.getName() + " Updated Successfully !!!");
+                } else if (selectedField.getType() == double.class) {
+                    double salary = tools.validateSalary("Employee Salary", errMsg);
+                    selectedField.set(e, salary);
+                    System.out.println(selectedField.getName() + " Updated Successfully !!!");
+                } else if (selectedField.getType() == boolean.class) {
+                    boolean isMale = tools.validateGender("Gender (Male (M) / Female (F))", errMsg).equalsIgnoreCase("Male");
+                    selectedField.set(e, isMale);
+                    System.out.println(selectedField.getName() + " Updated Successfully !!!");
+                } else if (selectedField.getType() == String.class) {
+                    String newValue = tools.validateString("Enter New Value For " + selectedField.getName() + ": ", errMsg);
+                    selectedField.set(e, newValue);
+                    System.out.println(selectedField.getName() + " Updated Successfully !!!");
+                } else {
+                    System.out.println("-> Field Type Not Supported : " + selectedField.getName());
+                }
             } catch (IllegalAccessException ex) {
                 System.out.println("-> Error While Updating " + selectedField.getName() + ": " + ex.getMessage());
             } catch (Exception ex) {
                 System.out.println("-> Unexpected error: " + ex.getMessage());
             }
-        }
-    }
-
-    private void updateField(Field field, Employee e) throws IllegalAccessException {
-        String fieldName = field.getName();
-
-        try {
-            if (fieldName.equalsIgnoreCase("DOB")) {
-                LocalDate DOB = tools.validateDateOfBirth("Enter New Value For Date Of Birth", errMsg);
-                field.set(e, DOB);
-                System.out.println(fieldName + " Updated Successfully !!!");
-            } else if (fieldName.equalsIgnoreCase("Salary")) {
-                double salary = tools.validateSalary("Employee Salary", errMsg);
-                field.set(e, salary);
-                System.out.println(fieldName + " Updated Successfully !!!");
-            } else if (fieldName.equalsIgnoreCase("Gender")) {
-                boolean isMale = tools.validateGender("Gender (Male (M) / Female (F))", errMsg).equals("Male");
-                field.set(e, isMale);
-                System.out.println(fieldName + " Updated Successfully !!!");
-            } else {
-                String newValue = tools.validateString("Enter New Value For " + fieldName + ": ", errMsg);
-                field.set(e, newValue);
-                System.out.println(fieldName + " Updated Successfully !!!");
-            }
-        } catch (Exception ex) {
-            System.out.println("-> Error while updating field " + fieldName + ": " + ex.getMessage());
         }
     }
 
@@ -169,7 +161,6 @@ public class EmployeeService implements IEmployeeService {
         } while (tools.validateStringInput("-> Do you want to continue adding employees (Y/N)", errMsg).equalsIgnoreCase("Y"));
     }
 
-
     @Override
     public Employee findByID(String ID) {
         for (Employee employee : currentEmp) {
@@ -178,5 +169,10 @@ public class EmployeeService implements IEmployeeService {
             }
         }
         return null;
+    }
+
+    @Override
+    public void sort() {
+
     }
 }

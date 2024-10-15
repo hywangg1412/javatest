@@ -2,15 +2,11 @@ package Service;
 
 import Model.Booking;
 import Model.Contract;
-import Model.Facility;
 import Repository.BookingRepository;
 import Repository.ContractRepository;
-import Repository.FacilityRepository;
 import View.AppTools;
 
 import java.lang.reflect.Field;
-import java.sql.SQLOutput;
-import java.util.LinkedHashMap;
 import java.util.Set;
 
 public class ContractService implements IContactService {
@@ -58,7 +54,7 @@ public class ContractService implements IContactService {
             bookingService.display();
 
             String bookingID = tools.validateID("Booking ID", "Invalid ID, try again", "^BK\\d{3}$");
-            Booking selectedBooking = findBookingByID(bookingID);
+            Booking selectedBooking = bookingService.findByID(bookingID);
 
             if (selectedBooking == null) {
                 System.out.println("-> Booking not found.");
@@ -68,10 +64,10 @@ public class ContractService implements IContactService {
             int contractNum;
             do {
                 contractNum = tools.validateInteger("Contract Number", "Invalid number, try again", 0);
-                if (isDupContractNum(contractNum)) {
+                if (findByContractNum(contractNum) == null) {
                     System.out.println("-> Duplicated Contract Num, Try Another One");
                 }
-            } while (isDupContractNum(contractNum));
+            } while (findByContractNum(contractNum) == null);
 
             double depositAmount = tools.validateDouble("Deposit Amount", "Invalid amount, try again", 0);
             double totalAmount = calculateTotalAmount(selectedBooking);
@@ -92,23 +88,24 @@ public class ContractService implements IContactService {
                 System.out.println("-> No contracts available.");
                 return;
             }
-            System.out.printf("%-15s %-15s %-15s %-15s\n",
+            System.out.println("+---------------+---------------+-------------------+---------------+");
+            System.out.printf("| %-13s | %-13s | %-17s | %-13s |\n",
                     "NO", "Booking ID", "Deposit Amount", "Total Payment");
-            System.out.println("--------------------------------------------------------------------------------");
-
+            System.out.println("+---------------+---------------+-------------------+---------------+");
             for (Contract contract : contractList) {
-                System.out.printf("%-15d %-15s %-15.2f %-15.2f\n",
+                System.out.printf("| %-13d | %-13s | %-17.2f | %-13.2f |\n",
                         contract.getContractNum(),
                         contract.getBookingID(),
                         contract.getDepositAmmount(),
                         contract.getTotalPayment());
             }
+            System.out.println("+---------------+---------------+-------------------+---------------+");
 
-            System.out.println("--------------------------------------------------------------------------------");
         } catch (Exception e) {
             System.out.println("-> Error while displaying contracts: " + e.getMessage());
         }
     }
+
 
     @Override
     public void save() {
@@ -185,18 +182,9 @@ public class ContractService implements IContactService {
         }
     }
 
-    public boolean isDupContractNum(int contractNum) {
-        try {
-            for (Contract c : contractList) {
-                if (c.getContractNum() == contractNum) {
-                    return true;
-                }
-            }
-            return false;
-        } catch (Exception e) {
-            System.out.println("-> Error while checking for duplicate contract number: " + e.getMessage());
-            return false;
-        }
+    @Override
+    public void sort() {
+
     }
 
     public Contract findByContractNum(int contractNum) {
@@ -209,20 +197,6 @@ public class ContractService implements IContactService {
             return null;
         } catch (Exception e) {
             System.out.println("-> Error while finding contract by number: " + e.getMessage());
-            return null;
-        }
-    }
-
-    private Booking findBookingByID(String ID) {
-        try {
-            for (Booking booking : bookingList) {
-                if (booking.getBookingID().equals(ID)) {
-                    return booking;
-                }
-            }
-            return null;
-        } catch (Exception e) {
-            System.out.println("-> Error while finding booking by ID: " + e.getMessage());
             return null;
         }
     }
