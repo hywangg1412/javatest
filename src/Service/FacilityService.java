@@ -163,6 +163,7 @@ public class FacilityService implements IFacilityService {
         return null;
     }
 
+    // FIX THIS`
     public String getFacilityID() {
         String faciID;
         try {
