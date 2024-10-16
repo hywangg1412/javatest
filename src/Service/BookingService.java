@@ -1,10 +1,14 @@
 package Service;
 
 import Model.Booking;
+import Model.Contract;
+import Model.Facility;
 import Repository.BookingRepository;
 import View.AppTools;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
 import java.util.TreeSet;
 
 public class BookingService implements IBookingService {
@@ -140,9 +144,4 @@ public class BookingService implements IBookingService {
         }
     }
 
-    public void getValueType(Booking booking){
-        if (booking.getBookingID() != null){
-
-        }
-    }
 }

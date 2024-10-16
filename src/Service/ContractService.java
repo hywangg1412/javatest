@@ -2,11 +2,14 @@ package Service;
 
 import Model.Booking;
 import Model.Contract;
+import Model.Facility;
 import Repository.BookingRepository;
 import Repository.ContractRepository;
 import View.AppTools;
 
 import java.lang.reflect.Field;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.Set;
 
 public class ContractService implements IContactService {
@@ -16,6 +19,7 @@ public class ContractService implements IContactService {
     private final Set<Booking> bookingList;
 
     private final BookingRepository bookingRepository;
+    private final FacilityService facilityService;
     private final BookingService bookingService;
     private final String errMsg;
 
@@ -26,6 +30,7 @@ public class ContractService implements IContactService {
 
         bookingRepository = new BookingRepository();
         contractRepository = new ContractRepository();
+        facilityService = new FacilityService();
 
         contractList = contractRepository.readFile();
         bookingList = bookingRepository.readFile();
@@ -70,7 +75,7 @@ public class ContractService implements IContactService {
             } while (findByContractNum(contractNum) == null);
 
             double depositAmount = tools.validateDouble("Deposit Amount", "Invalid amount, try again", 0);
-            double totalAmount = calculateTotalAmount(selectedBooking);
+            double totalAmount = getTotalPayment(bookingID) - depositAmount;
             Contract newContract = new Contract(contractNum, bookingID, depositAmount, totalAmount);
             add(newContract);
             System.out.println("-> Contract created successfully with Contract Number: " + contractNum);
@@ -78,6 +83,46 @@ public class ContractService implements IContactService {
 
         } catch (Exception e) {
             System.out.println("-> Error while adding contract: " + e.getMessage());
+        }
+    }
+
+    public double getTotalPayment(String bookingID) {
+
+        Booking foundBooking = bookingService.findByID(bookingID);
+
+        Facility foundFacility = facilityService.findByID(foundBooking.getServiceID());
+
+
+        LocalDate startDate = foundBooking.getStartDate();
+        LocalDate endDate = foundBooking.getEndDate();
+
+        long totalDays = ChronoUnit.DAYS.between(startDate, endDate);
+
+        try {
+            switch (foundFacility.getRentalType().toLowerCase()) {
+                case "day":
+                    return (((int) totalDays) * foundFacility.getRentalCost()); // Return total days for daily rental
+                case "week":
+                    return (((int) (totalDays / 7)) * foundFacility.getRentalCost()); // Return total weeks for weekly rental
+                case "month":
+                    int yearDifference = endDate.getYear() - startDate.getYear();
+                    int monthDifference = endDate.getMonthValue() - startDate.getMonthValue();
+
+                    // Calculate total months, adjusting for the day of the month
+                    int duration = yearDifference * 12 + monthDifference;
+
+                    // Adjust if start day is greater than end day
+                    if (startDate.getDayOfMonth() > endDate.getDayOfMonth()) {
+                        duration--;
+                    }
+                    return duration * foundFacility.getRentalCost(); // Return total months for monthly rental
+                default:
+                    System.out.println("-> Invalid rental type.");
+                    return 0; // Return 0 if the rental type is not recognized
+            }
+        } catch (Exception e) {
+            System.out.println("-> Error While Getting Duration: " + e.getMessage());
+            return 0; // Return 0 in case of error
         }
     }
 
@@ -210,15 +255,5 @@ public class ContractService implements IContactService {
             return null;
         }
     }
-
-    public double calculateTotalAmount(Booking booking) {
-        try {
-            return 100.0;
-        } catch (Exception e) {
-            System.out.println("-> Error while calculating total amount: " + e.getMessage());
-            return 0.0;
-        }
-    }
-
 
 }
