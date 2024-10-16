@@ -117,9 +117,9 @@ public class ContractService implements IContactService {
     }
 
     @Override
-    public void update(Contract updatedContract) {
+    public void update(Contract c) {
         try {
-            Field[] fields = updatedContract.getClass().getDeclaredFields();
+            Field[] fields = c.getClass().getDeclaredFields();
             int totalFields = fields.length;
             boolean isUpdate = true;
 
@@ -147,23 +147,33 @@ public class ContractService implements IContactService {
                 selectedField.setAccessible(true);
 
                 try {
-                    Object currentValue = selectedField.get(updatedContract);
-                    System.out.println("Current Value Of - " + selectedField.getName() + " - " + currentValue);
-                    String newValue = tools.validateString("Enter New Value For " + selectedField.getName(), errMsg);
-
-                    if (selectedField.getType() == String.class) {
-                        selectedField.set(updatedContract, newValue);
-                    } else if (selectedField.getType() == int.class) {
-                        selectedField.setInt(updatedContract, Integer.parseInt(newValue));
-                    } else if (selectedField.getType() == double.class) {
-                        selectedField.setDouble(updatedContract, Double.parseDouble(newValue));
-                    } else {
-                        System.out.println("-> Unsupported Field Type - " + selectedField.getName());
+                    switch (choice){
+                        case 1 -> {
+                            String bookingID = tools.validateID("Booking ID", "Invalid ID, try again", "^BK\\d{3}$");
+                            selectedField.set(c,bookingID);
+                        }
+                        case 2 ->{
+                            int contractNum;
+                            do {
+                                contractNum = tools.validateInteger("Contract Number", "Invalid number, try again", 0);
+                                if (findByContractNum(contractNum) == null) {
+                                    System.out.println("-> Duplicated Contract Num, Try Another One");
+                                }
+                            } while (findByContractNum(contractNum) == null);
+                            selectedField.set(c, contractNum);
+                        }
+                        case 3 -> {
+                            double depositAmount = tools.validateDouble("Deposit Amount", "Invalid amount, try again",1);
+                            selectedField.set(c,depositAmount);
+                        }
+                        case 4 ->{
+                            double totalAmount = tools.validateDouble("Total Amount",errMsg,1);
+                            selectedField.set(c,totalAmount);
+                        }
                     }
-                } catch (IllegalAccessException e) {
-                    throw new RuntimeException("Error accessing field: " + e.getMessage());
+                } catch (Exception e) {
+                    throw new RuntimeException("-> Error accessing field: " + e.getMessage());
                 }
-
                 save();
             }
         } catch (Exception e) {
@@ -201,7 +211,7 @@ public class ContractService implements IContactService {
         }
     }
 
-    private double calculateTotalAmount(Booking booking) {
+    public double calculateTotalAmount(Booking booking) {
         try {
             return 100.0;
         } catch (Exception e) {
@@ -209,4 +219,6 @@ public class ContractService implements IContactService {
             return 0.0;
         }
     }
+
+
 }

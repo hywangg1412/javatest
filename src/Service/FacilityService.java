@@ -36,7 +36,7 @@ public class FacilityService implements IFacilityService {
                 System.out.printf("| %-15s | %-20s | %-15d |%n",
                         facility.getFacilityID(),
                         facility.getFacilityName(),
-                        usageCount);
+                        facility.getUsageCount());
             }
             System.out.println("+-----------------+----------------------+-----------------+");
 

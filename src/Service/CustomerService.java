@@ -106,28 +106,49 @@ public class CustomerService implements ICustomerService {
                 selectedField = subFields[choice - fields.length - 1];
             }
             selectedField.setAccessible(true);
-            try {
-                if (selectedField.getType() == LocalDate.class) {
-                    LocalDate DOB = tools.validateDateOfBirth("Enter New Value For Date Of Birth", errMsg);
-                    selectedField.set(c, DOB);
-                    System.out.println(selectedField.getName() + " Updated Successfully !!!");
-                } else if (selectedField.getType() == double.class) {
-                    double salary = tools.validateSalary("Employee Salary", errMsg);
-                    selectedField.set(c, salary);
-                    System.out.println(selectedField.getName() + " Updated Successfully !!!");
-                } else if (selectedField.getType() == boolean.class) {
-                    boolean isMale = tools.validateGender("Gender (Male (M) / Female (F))", errMsg).equalsIgnoreCase("Male");
-                    selectedField.set(c, isMale);
-                    System.out.println(selectedField.getName() + " Updated Successfully !!!");
-                } else if (selectedField.getType() == String.class) {
-                    String newValue = tools.validateString("Enter New Value For " + selectedField.getName() + ": ", errMsg);
-                    selectedField.set(c, newValue);
-                    System.out.println(selectedField.getName() + " Updated Successfully !!!");
-                } else {
-                    System.out.println("-> Field Type Not Supported : " + selectedField.getName());
+            try{
+                switch (choice){
+                    case 1 -> {
+                        String ID;
+                        do {
+                            ID = tools.validateID("Customer ID", "ID Must Follow CUS-0000", "CUS-\\d{4}");
+                        } while (findByID(ID) != null);
+                    }
+                    case 2 -> {
+                        String name = tools.normalizeName(tools.validateStringInput("Customer Full Name", errMsg));
+                        selectedField.set(c,name);
+                    }
+                    case 3 -> {
+                        LocalDate DOB = tools.validateDateOfBirth("Customer Date Of Birth", errMsg);
+                        selectedField.set(c,DOB);
+                    }
+                    case 4 -> {
+                        String CMND = tools.validateIDCard("Customer CMND", errMsg);
+                        selectedField.set(c,CMND);
+                    }
+                    case 5 ->{
+                        boolean isMale = tools.validateGender("Gender (Male (M) / Female (F))", errMsg).equalsIgnoreCase("Male");
+                        selectedField.set(c,isMale);
+                    }
+                    case 6 ->{
+                        String phoneNum = tools.validatePhoneNumber("Customer Phone Number", errMsg);
+                        selectedField.set(c,phoneNum);
+                    }
+                    case 7 ->{
+                        String email = tools.validateEmail("Customer Email", errMsg);
+                        selectedField.set(c,email);
+                    }
+                    case 8 ->{
+                        String address = tools.validateStringInput("Customer Address", errMsg);
+                        selectedField.set(c,address);
+                    }
+                    case 9 ->{
+                        String type = tools.validateStringInput("Customer Type", errMsg);
+                        selectedField.set(c,type);
+                    }
+                    default -> System.out.println(errMsg);
                 }
-            } catch (IllegalAccessException ex) {
-                System.out.println("-> Error While Updating " + selectedField.getName() + ": " + ex.getMessage());
+                save();
             } catch (Exception ex) {
                 System.out.println("-> Unexpected error: " + ex.getMessage());
             }

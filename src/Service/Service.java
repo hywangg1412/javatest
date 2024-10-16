@@ -7,7 +7,7 @@ public interface Service<T> {
 
     void save();
 
-    void update(T enity);
+    void update(T enity) throws IllegalAccessException;
 
     T findByID(String ID);
 

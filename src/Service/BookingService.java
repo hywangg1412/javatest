@@ -45,6 +45,7 @@ public class BookingService implements IBookingService {
                             AppTools.localDateToString(booking.getEndDate()),
                             booking.getCustomerID(),
                             booking.getServiceID());
+
                 }
                 System.out.println("+------------+-----------------+--------------+--------------+-----------------+--------------+");
 
@@ -55,7 +56,6 @@ public class BookingService implements IBookingService {
             System.out.println("-> Error While Displaying Booking List: " + e.getMessage());
         }
     }
-
 
     @Override
     public void add(Booking booking) {
@@ -112,7 +112,6 @@ public class BookingService implements IBookingService {
 
     }
 
-
     public void addBooking() {
         try {
             do {
@@ -138,6 +137,12 @@ public class BookingService implements IBookingService {
             } while (tools.validateStringInput("Do You Want To Continue Adding Booking (Y/N)", errMsg).equalsIgnoreCase("Y"));
         } catch (Exception e) {
             System.out.println("-> Error While Adding Booking: " + e.getMessage());
+        }
+    }
+
+    public void getValueType(Booking booking){
+        if (booking.getBookingID() != null){
+
         }
     }
 }

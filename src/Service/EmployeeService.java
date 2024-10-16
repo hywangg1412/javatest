@@ -73,7 +73,7 @@ public class EmployeeService implements IEmployeeService {
     }
 
     @Override
-    public void update(Employee e) {
+    public void update(Employee e) throws IllegalAccessException {
         Field[] fields = e.getClass().getSuperclass().getDeclaredFields();
         Field[] subFields = e.getClass().getDeclaredFields();
         int totalField = fields.length + subFields.length;
@@ -105,29 +105,50 @@ public class EmployeeService implements IEmployeeService {
             }
             selectedField.setAccessible(true);
             try {
-                if (selectedField.getType() == LocalDate.class) {
-                    LocalDate DOB = tools.validateDateOfBirth("Enter New Value For Date Of Birth", errMsg);
-                    selectedField.set(e, DOB);
-                    System.out.println(selectedField.getName() + " Updated Successfully !!!");
-                } else if (selectedField.getType() == double.class) {
-                    double salary = tools.validateSalary("Employee Salary", errMsg);
-                    selectedField.set(e, salary);
-                    System.out.println(selectedField.getName() + " Updated Successfully !!!");
-                } else if (selectedField.getType() == boolean.class) {
-                    boolean isMale = tools.validateGender("Gender (Male (M) / Female (F))", errMsg).equalsIgnoreCase("Male");
-                    selectedField.set(e, isMale);
-                    System.out.println(selectedField.getName() + " Updated Successfully !!!");
-                } else if (selectedField.getType() == String.class) {
-                    String newValue = tools.validateString("Enter New Value For " + selectedField.getName() + ": ", errMsg);
-                    selectedField.set(e, newValue);
-                    System.out.println(selectedField.getName() + " Updated Successfully !!!");
-                } else {
-                    System.out.println("-> Field Type Not Supported : " + selectedField.getName());
+                switch (choice) {
+                    case 1 -> {
+                        String ID;
+                        do {
+                            ID = tools.validateID("EmployeeID", "ID Must Follow EMP-0000", "EMP-\\d{4}");
+                        } while (findByID(ID) != null);
+                        selectedField.set(e,ID);
+                    }
+                    case 2 -> {
+                        LocalDate DOB = tools.validateDateOfBirth("Employee Date Of Birth", errMsg);
+                        selectedField.set(e, DOB);
+                    }
+                    case 3 -> {
+                        String CMND = tools.validateIDCard("Employee CMND", errMsg);
+                        selectedField.set(e, CMND);
+                    }
+                    case 4 -> {
+                        boolean isMale = tools.validateGender("Gender (Male (M) / Female (F))", errMsg).equals("Male");
+                        selectedField.set(e, isMale);
+                    }
+                    case 5 -> {
+                        String phoneNum = tools.validatePhoneNumber("Employee Phone Number", errMsg);
+                        selectedField.set(e, phoneNum);
+                    }
+                    case 6 -> {
+                        String email = tools.validateEmail("Employee Email", errMsg);
+                        selectedField.set(e, email);
+                    }
+                    case 7 -> {
+                        String degree = tools.validateString("Employee Degree", errMsg);
+                        selectedField.set(e, degree);
+                    }
+                    case 8 -> {
+                        String position = tools.validateStringInput("Employee Position", errMsg);
+                        selectedField.set(e, position);
+                    }
+                    case 9 -> {
+                        double salary = tools.validateSalary("Employee Salary", errMsg);
+                        selectedField.set(e, salary);
+                    }
                 }
-            } catch (IllegalAccessException ex) {
-                System.out.println("-> Error While Updating " + selectedField.getName() + ": " + ex.getMessage());
-            } catch (Exception ex) {
-                System.out.println("-> Unexpected error: " + ex.getMessage());
+                save();
+            } catch (Exception Ex) {
+                System.out.println("-> Error While Updating Employee.");
             }
         }
     }
