@@ -17,7 +17,6 @@ public class ContractService implements IContactService {
     private final Set<Contract> contractList;
     private final ContractRepository contractRepository;
     private final Set<Booking> bookingList;
-
     private final BookingRepository bookingRepository;
     private final FacilityService facilityService;
     private final BookingService bookingService;
@@ -25,9 +24,7 @@ public class ContractService implements IContactService {
 
     public ContractService() {
         bookingService = new BookingService();
-
         tools = new AppTools();
-
         bookingRepository = new BookingRepository();
         contractRepository = new ContractRepository();
         facilityService = new FacilityService();
@@ -41,10 +38,15 @@ public class ContractService implements IContactService {
     @Override
     public void add(Contract entity) {
         try {
+            if (entity == null) {
+                throw new IllegalArgumentException("Contract cannot be null");
+            }
             contractList.add(entity);
             System.out.println("-> Contract added successfully!");
-        } catch (Exception e) {
+        } catch (IllegalArgumentException e) {
             System.out.println("-> Error While Adding Contract: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("-> Unexpected error: " + e.getMessage());
         }
     }
 
@@ -69,10 +71,10 @@ public class ContractService implements IContactService {
             int contractNum;
             do {
                 contractNum = tools.validateInteger("Contract Number", "Invalid number, try again", 0);
-                if (findByContractNum(contractNum) == null) {
+                if (findByContractNum(contractNum) != null) {
                     System.out.println("-> Duplicated Contract Num, Try Another One");
                 }
-            } while (findByContractNum(contractNum) == null);
+            } while (findByContractNum(contractNum) != null);
 
             double depositAmount = tools.validateDouble("Deposit Amount", "Invalid amount, try again", 0);
             double totalAmount = getTotalPayment(bookingID) - depositAmount;
@@ -81,17 +83,16 @@ public class ContractService implements IContactService {
             System.out.println("-> Contract created successfully with Contract Number: " + contractNum);
             save();
 
-        } catch (Exception e) {
+        } catch (IllegalArgumentException e) {
             System.out.println("-> Error while adding contract: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("-> Unexpected error while adding contract: " + e.getMessage());
         }
     }
 
     public double getTotalPayment(String bookingID) {
-
         Booking foundBooking = bookingService.findByID(bookingID);
-
         Facility foundFacility = facilityService.findByID(foundBooking.getServiceID());
-
 
         LocalDate startDate = foundBooking.getStartDate();
         LocalDate endDate = foundBooking.getEndDate();
@@ -101,9 +102,9 @@ public class ContractService implements IContactService {
         try {
             switch (foundFacility.getRentalType().toLowerCase()) {
                 case "day":
-                    return (((int) totalDays) * foundFacility.getRentalCost()); // Return total days for daily rental
+                    return (totalDays * foundFacility.getRentalCost()); // Return total days for daily rental
                 case "week":
-                    return (((int) (totalDays / 7)) * foundFacility.getRentalCost()); // Return total weeks for weekly rental
+                    return ((totalDays / 7) * foundFacility.getRentalCost()); // Return total weeks for weekly rental
                 case "month":
                     int yearDifference = endDate.getYear() - startDate.getYear();
                     int monthDifference = endDate.getMonthValue() - startDate.getMonthValue();
@@ -128,14 +129,13 @@ public class ContractService implements IContactService {
 
     @Override
     public void display() {
+        if (contractList.isEmpty()) {
+            System.out.println("-> No contracts available.");
+            return;
+        }
         try {
-            if (contractList.isEmpty()) {
-                System.out.println("-> No contracts available.");
-                return;
-            }
             System.out.println("+---------------+---------------+-------------------+---------------+");
-            System.out.printf("| %-13s | %-13s | %-17s | %-13s |\n",
-                    "NO", "Booking ID", "Deposit Amount", "Total Payment");
+            System.out.printf("| %-13s | %-13s | %-17s | %-13s |\n", "NO", "Booking ID", "Deposit Amount", "Total Payment");
             System.out.println("+---------------+---------------+-------------------+---------------+");
             for (Contract contract : contractList) {
                 System.out.printf("| %-13d | %-13s | %-17.2f | %-13.2f |\n",
@@ -150,7 +150,6 @@ public class ContractService implements IContactService {
             System.out.println("-> Error while displaying contracts: " + e.getMessage());
         }
     }
-
 
     @Override
     public void save() {
@@ -192,32 +191,32 @@ public class ContractService implements IContactService {
                 selectedField.setAccessible(true);
 
                 try {
-                    switch (choice){
+                    switch (choice) {
                         case 1 -> {
                             String bookingID = tools.validateID("Booking ID", "Invalid ID, try again", "^BK\\d{3}$");
-                            selectedField.set(c,bookingID);
+                            selectedField.set(c, bookingID);
                         }
-                        case 2 ->{
+                        case 2 -> {
                             int contractNum;
                             do {
                                 contractNum = tools.validateInteger("Contract Number", "Invalid number, try again", 0);
-                                if (findByContractNum(contractNum) == null) {
+                                if (findByContractNum(contractNum) != null) {
                                     System.out.println("-> Duplicated Contract Num, Try Another One");
                                 }
-                            } while (findByContractNum(contractNum) == null);
+                            } while (findByContractNum(contractNum) != null);
                             selectedField.set(c, contractNum);
                         }
                         case 3 -> {
-                            double depositAmount = tools.validateDouble("Deposit Amount", "Invalid amount, try again",1);
-                            selectedField.set(c,depositAmount);
+                            double depositAmount = tools.validateDouble("Deposit Amount", "Invalid amount, try again", 1);
+                            selectedField.set(c, depositAmount);
                         }
-                        case 4 ->{
-                            double totalAmount = tools.validateDouble("Total Amount",errMsg,1);
-                            selectedField.set(c,totalAmount);
+                        case 4 -> {
+                            double totalAmount = tools.validateDouble("Total Amount", errMsg, 1);
+                            selectedField.set(c, totalAmount);
                         }
                     }
                 } catch (Exception e) {
-                    throw new RuntimeException("-> Error accessing field: " + e.getMessage());
+                    System.out.println("-> Error accessing field: " + e.getMessage());
                 }
                 save();
             }
@@ -226,10 +225,14 @@ public class ContractService implements IContactService {
         }
     }
 
-
     @Override
     public Contract findByID(String ID) {
         try {
+            for (Contract contract : contractList) {
+                if (contract.getBookingID().equals(ID)) {
+                    return contract;
+                }
+            }
             return null;
         } catch (Exception e) {
             System.out.println("-> Error while finding contract by ID: " + e.getMessage());
@@ -239,7 +242,7 @@ public class ContractService implements IContactService {
 
     @Override
     public void sort() {
-
+        // Implement sorting logic if needed
     }
 
     public Contract findByContractNum(int contractNum) {
@@ -255,5 +258,4 @@ public class ContractService implements IContactService {
             return null;
         }
     }
-
 }
