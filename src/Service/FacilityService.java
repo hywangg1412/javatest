@@ -36,7 +36,7 @@ public class FacilityService implements IFacilityService {
                 System.out.printf("| %-15s | %-20s | %-15d |%n",
                         facility.getFacilityID(),
                         facility.getFacilityName(),
-                        facility.getUsageCount());
+                        usageCount);
             }
             System.out.println("+-----------------+----------------------+-----------------+");
 
@@ -44,6 +44,7 @@ public class FacilityService implements IFacilityService {
             System.out.println("Error displaying facilities: " + e.getMessage());
         }
     }
+
 
     public void sort(){
 
@@ -163,7 +164,7 @@ public class FacilityService implements IFacilityService {
         return null;
     }
 
-    // FIX THIS`
+
     public String getFacilityID() {
         String faciID;
         try {
@@ -171,8 +172,6 @@ public class FacilityService implements IFacilityService {
                 faciID = tools.validateID("Facility ID", "ID Must Follow SVxx-xxxx", "SV(VL|HO|RO)-\\d{4}");
                 Facility facility = findByID(faciID);
                 if (facility != null) {
-                    incrementUsageCount(facility);
-
                     return faciID;
                 } else {
                     System.out.println("-> ID Not Found, Try Again!");
@@ -183,21 +182,5 @@ public class FacilityService implements IFacilityService {
             return null;
         }
     }
-
-    public void incrementUsageCount(Facility facility){
-        try {
-            if (currentFacilities.containsKey(facility)){
-                int currentCount = currentFacilities.get(facility);
-                facility.incrementUsageCount();
-                currentFacilities.put(facility, currentCount + 1);
-                System.out.println("-> Usage Count Of " + facility.getFacilityID() + " Increased To: " + currentCount + 1);
-            } else {
-                System.out.println("-> Not Found Facility With ID - " + facility.getFacilityID());
-            }
-        } catch (Exception e){
-            System.out.println("-> Error While Increment Usage Count Of " + facility.getFacilityID());
-        }
-    }
-
 
 }

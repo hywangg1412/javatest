@@ -32,6 +32,8 @@ public class FacilityRepository implements IFacilityRepository {
                     int maxPeople = Integer.parseInt(data[4]);
                     String rentalType = data[5];
 
+                    int usageCount = Integer.parseInt(data[data.length - 1]);
+
                     if (facilityType.equalsIgnoreCase("Villa")) {
                         String roomStandard = data[6];
                         double poolArea = Double.parseDouble(data[7]);
@@ -47,7 +49,7 @@ public class FacilityRepository implements IFacilityRepository {
                     } else {
                         continue;
                     }
-                    facilityList.put(facility, 0);
+                    facilityList.put(facility, usageCount);
 
                 } catch (Exception e) {
                     System.out.println("-> Error while parsing line: " + line + " - " + e.getMessage());
@@ -61,38 +63,44 @@ public class FacilityRepository implements IFacilityRepository {
 
 
 
-    @Override
-    public void writeFile(LinkedHashMap<Facility, Integer> Facilities) {
+    public void writeFile(LinkedHashMap<Facility, Integer> facilityList) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(path + facilityPath))) {
-            for (Map.Entry<Facility, Integer> entry : Facilities.entrySet()) {
+            for (Map.Entry<Facility, Integer> entry : facilityList.entrySet()) {
                 Facility facility = entry.getKey();
-                Integer usageCount = entry.getValue();
+                int usageCount = entry.getValue();
 
-                StringBuilder line = new StringBuilder(facility.getFacilityID() + ", " + facility.getFacilityName()
-                        + ", " + facility.getArea() + ", " + facility.getRentalCost() + ", " + facility.getMaxPeople()
-                        + ", " + facility.getRentalType() + ", ");
+                String line = String.join(",",
+                        facility.getFacilityID(),
+                        facility.getFacilityName(),
+                        String.valueOf(facility.getArea()),
+                        String.valueOf(facility.getRentalCost()),
+                        String.valueOf(facility.getMaxPeople()),
+                        facility.getRentalType());
 
                 if (facility instanceof Villa) {
                     Villa villa = (Villa) facility;
-                    line.append(villa.getRoomStandard()).append(", ")
-                            .append(villa.getPoolArea()).append(", ")
-                            .append(villa.getNumberOfFloor()).append(", ")
-                            .append(usageCount);
+                    line += String.join(",",
+                            villa.getRoomStandard(),
+                            String.valueOf(villa.getPoolArea()),
+                            String.valueOf(villa.getNumberOfFloor()),
+                            String.valueOf(usageCount));
                 } else if (facility instanceof House) {
                     House house = (House) facility;
-                    line.append(house.getRoomStandard()).append(", ")
-                            .append(house.getNumberOfFloor()).append(", ")
-                            .append(usageCount);
+                    line += String.join(",",
+                            house.getRoomStandard(),
+                            String.valueOf(house.getNumberOfFloor()),
+                            String.valueOf(usageCount));
                 } else if (facility instanceof Room) {
                     Room room = (Room) facility;
-                    line.append(room.getFreeService()).append(", ")
-                            .append(usageCount);
+                    line += String.join(",",
+                            room.getFreeService(),
+                            String.valueOf(usageCount));
                 }
-                bw.write(line.toString());
+                bw.write(line);
                 bw.newLine();
             }
         } catch (IOException e) {
-            throw new RuntimeException("-> Error While Writing To File " + e.getMessage());
+            throw new RuntimeException("-> Error while writing file: " + e.getMessage());
         }
     }
 }

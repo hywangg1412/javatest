@@ -22,6 +22,7 @@ public abstract class Facility {
         this.rentalCost = rentalCost;
         this.maxPeople = maxPeople;
         this.rentalType = rentalType;
+        this.usageCount = 0;
     }
 
     public String getFacilityID() {
@@ -84,19 +85,6 @@ public abstract class Facility {
         this.usageCount++;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (!(obj instanceof Facility)) return false;
-        Facility other = (Facility) obj; // Ép kiểu
-        return this.facilityID != null && this.facilityID.equals(other.facilityID);
-    }
-
-    // Phương thức hashCode
-    @Override
-    public int hashCode() {
-        return Objects.hash(facilityID);
-    }
 
     public String displayInfo() {
         return String.format("Facility ID: %s, Name: %s, Area: %.2f, Rental Cost: %.2f, Max People: %d, Rental Type: %s, Usage Count: %d",

@@ -1,4 +1,4 @@
 package Repository;
 
-public interface IPromotionRepository {
+public interface IPromotionRepository extends Repository{
 }

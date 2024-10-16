@@ -125,13 +125,22 @@ public class BookingService implements IBookingService {
                 facilityService.display();
                 String faciID = facilityService.getFacilityID();
 
-                String bookingID = tools.validateID("Booking ID", errMsg, "^BK\\d{3}$");
+                String bookingID;
+                do {
+                    bookingID = tools.validateID("Booking ID", errMsg, "^BK\\d{3}$");
+                }while (findByID(bookingID) != null);
+
+
                 LocalDate bookingDate = tools.validateBookingDate("Booking Date", errMsg);
                 LocalDate startDate = tools.validateStartDate(bookingDate, "Start Date", errMsg);
                 LocalDate endDate = tools.validateEndDate(startDate, "End Date", errMsg);
 
                 add(new Booking(bookingID, AppTools.localDateToString(bookingDate), AppTools.localDateToString(startDate), AppTools.localDateToString(endDate), cusID, faciID));
 
+                Facility facility = facilityService.findByID(faciID);
+                if (facility != null) {
+                    facility.incrementUsageCount();
+                }
 
                 if (tools.validateStringInput("-> Do you want to save changes to file (Y/N): ", errMsg).equalsIgnoreCase("Y")) {
                     save();
