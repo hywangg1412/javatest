@@ -13,7 +13,7 @@ public class CustomerService implements ICustomerService {
     private final AppTools tools;
     private final String errMsg;
     private final String updatedMsg;
-    private final ArrayList<Customer> currentCustomer;
+    ArrayList<Customer> currentCustomer;
 
     public CustomerService() {
         customerRepository = new CustomerRepository();
@@ -21,6 +21,14 @@ public class CustomerService implements ICustomerService {
         tools = new AppTools();
         errMsg = "-> Invalid Input, Try Again";
         updatedMsg = "Updated Successfully !!!";
+    }
+
+    public ArrayList<Customer> getCurrentCustomer() {
+        return currentCustomer;
+    }
+
+    public void setCurrentCustomer(ArrayList<Customer> currentCustomer) {
+        this.currentCustomer = currentCustomer;
     }
 
     @Override

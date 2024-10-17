@@ -16,7 +16,6 @@ public class ContractService implements IContactService {
     private final AppTools tools;
     private final Set<Contract> contractList;
     private final ContractRepository contractRepository;
-    private final Set<Booking> bookingList;
     private final BookingRepository bookingRepository;
     private final FacilityService facilityService;
     private final BookingService bookingService;
@@ -30,7 +29,6 @@ public class ContractService implements IContactService {
         facilityService = new FacilityService();
 
         contractList = contractRepository.readFile();
-        bookingList = bookingRepository.readFile();
 
         errMsg = "-> Invalid Input, Please Try Again";
     }
@@ -52,7 +50,7 @@ public class ContractService implements IContactService {
 
     public void addContract() {
         try {
-            if (bookingList.isEmpty()) {
+            if (bookingService.getBookingList().isEmpty()) {
                 System.out.println("-> No bookings available to create a contract.");
                 return;
             }

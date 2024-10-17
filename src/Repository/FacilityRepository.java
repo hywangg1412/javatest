@@ -61,8 +61,6 @@ public class FacilityRepository implements IFacilityRepository {
         return facilityList;
     }
 
-
-
     public void writeFile(LinkedHashMap<Facility, Integer> facilityList) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(path + facilityPath))) {
             for (Map.Entry<Facility, Integer> entry : facilityList.entrySet()) {
@@ -103,4 +101,5 @@ public class FacilityRepository implements IFacilityRepository {
             throw new RuntimeException("-> Error while writing file: " + e.getMessage());
         }
     }
+
 }

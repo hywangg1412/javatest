@@ -81,10 +81,6 @@ public abstract class Facility {
         this.usageCount = usageCount;
     }
 
-    public void incrementUsageCount(){
-        this.usageCount++;
-    }
-
 
     public String displayInfo() {
         return String.format("Facility ID: %s, Name: %s, Area: %.2f, Rental Cost: %.2f, Max People: %d, Rental Type: %s, Usage Count: %d",

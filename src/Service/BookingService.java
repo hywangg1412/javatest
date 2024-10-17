@@ -1,18 +1,16 @@
 package Service;
 
 import Model.Booking;
-import Model.Contract;
 import Model.Facility;
 import Repository.BookingRepository;
 import View.AppTools;
 
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.util.Date;
+
 import java.util.TreeSet;
 
 public class BookingService implements IBookingService {
-    private final TreeSet<Booking> bookingList;
+    public TreeSet<Booking> bookingList;
     private final BookingRepository bkRepository;
 
     private final AppTools tools;
@@ -31,6 +29,14 @@ public class BookingService implements IBookingService {
         facilityService = new FacilityService();
 
         errMsg = "-> Invalid Input, Try Again.";
+    }
+
+    public TreeSet<Booking> getBookingList() {
+        return bookingList;
+    }
+
+    public void setBookingList(TreeSet<Booking> bookingList) {
+        this.bookingList = bookingList;
     }
 
     @Override
@@ -128,8 +134,10 @@ public class BookingService implements IBookingService {
                 String bookingID;
                 do {
                     bookingID = tools.validateID("Booking ID", errMsg, "^BK\\d{3}$");
+                    if (findByID(bookingID) != null){
+                        System.out.println("-> Duplicated ID , Try Again.");
+                    }
                 }while (findByID(bookingID) != null);
-
 
                 LocalDate bookingDate = tools.validateBookingDate("Booking Date", errMsg);
                 LocalDate startDate = tools.validateStartDate(bookingDate, "Start Date", errMsg);
@@ -137,9 +145,14 @@ public class BookingService implements IBookingService {
 
                 add(new Booking(bookingID, AppTools.localDateToString(bookingDate), AppTools.localDateToString(startDate), AppTools.localDateToString(endDate), cusID, faciID));
 
-                Facility facility = facilityService.findByID(faciID);
-                if (facility != null) {
-                    facility.incrementUsageCount();
+                Facility foundFacility = facilityService.findByID(faciID);
+
+                if (foundFacility != null){
+                    Integer usageCount = facilityService.getCurrentFacilities().get(foundFacility);
+                    if (usageCount == null){
+                        usageCount = 0;
+                    }
+                    usageCount++;
                 }
 
                 if (tools.validateStringInput("-> Do you want to save changes to file (Y/N): ", errMsg).equalsIgnoreCase("Y")) {

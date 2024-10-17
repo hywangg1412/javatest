@@ -12,13 +12,21 @@ public class EmployeeService implements IEmployeeService {
     private final EmployeeRepository empRepository;
     private final AppTools tools;
     private final String errMsg;
-    private final ArrayList<Employee> currentEmp;
+    ArrayList<Employee> currentEmp;
 
     public EmployeeService() {
         empRepository = new EmployeeRepository();
         currentEmp = empRepository.readFile();
         tools = new AppTools();
         errMsg = "-> Invalid Input, Try Again";
+    }
+
+    public ArrayList<Employee> getCurrentEmp() {
+        return currentEmp;
+    }
+
+    public void setCurrentEmp(ArrayList<Employee> currentEmp) {
+        this.currentEmp = currentEmp;
     }
 
     @Override

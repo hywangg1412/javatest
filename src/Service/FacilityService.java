@@ -7,13 +7,12 @@ import Model.Villa;
 import Repository.FacilityRepository;
 import View.AppTools;
 
-import java.sql.SQLOutput;
 import java.util.*;
 
 public class FacilityService implements IFacilityService {
     private final FacilityRepository faciRepository;
     private final AppTools tools;
-    private LinkedHashMap<Facility, Integer> currentFacilities;
+    LinkedHashMap<Facility, Integer> currentFacilities;
     private final String errMsg;
 
     public FacilityService() {
@@ -21,6 +20,14 @@ public class FacilityService implements IFacilityService {
         tools = new AppTools();
         currentFacilities = faciRepository.readFile();
         errMsg = "-> Invalid Input, Try Again";
+    }
+
+    public LinkedHashMap<Facility, Integer> getCurrentFacilities() {
+        return currentFacilities;
+    }
+
+    public void setCurrentFacilities(LinkedHashMap<Facility, Integer> currentFacilities) {
+        this.currentFacilities = currentFacilities;
     }
 
     @Override
@@ -46,7 +53,7 @@ public class FacilityService implements IFacilityService {
     }
 
 
-    public void sort(){
+    public void sort() {
 
     }
 
@@ -95,10 +102,10 @@ public class FacilityService implements IFacilityService {
             do {
                 do {
                     ID = tools.validateID(facilityType + " ID", "ID Must Follow SVxx-xxxx", "SV(VL|HO|RO)-\\d{4}");
-                    if (findByID(ID)!= null) {
+                    if (findByID(ID) != null) {
                         System.out.println("-> ID Already Exist, Try New One");
                     }
-                } while (findByID(ID)!= null);
+                } while (findByID(ID) != null);
 
                 String facilityName = tools.validateStringInput(facilityType + " Name", errMsg);
                 double area = tools.validateDouble("Area", errMsg, 30);
@@ -163,7 +170,6 @@ public class FacilityService implements IFacilityService {
         System.out.println("-> ID Not Found");
         return null;
     }
-
 
     public String getFacilityID() {
         String faciID;
