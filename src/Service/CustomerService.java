@@ -13,6 +13,15 @@ public class CustomerService implements ICustomerService {
     private final AppTools tools;
     private final String errMsg;
     private final String updatedMsg;
+
+    public ArrayList<Customer> getCurrentCustomer() {
+        return currentCustomer;
+    }
+
+    public void setCurrentCustomer(ArrayList<Customer> currentCustomer) {
+        this.currentCustomer = currentCustomer;
+    }
+
     ArrayList<Customer> currentCustomer;
 
     public CustomerService() {
@@ -23,13 +32,7 @@ public class CustomerService implements ICustomerService {
         updatedMsg = "Updated Successfully !!!";
     }
 
-    public ArrayList<Customer> getCurrentCustomer() {
-        return currentCustomer;
-    }
 
-    public void setCurrentCustomer(ArrayList<Customer> currentCustomer) {
-        this.currentCustomer = currentCustomer;
-    }
 
     @Override
     public void display() {
@@ -52,12 +55,11 @@ public class CustomerService implements ICustomerService {
                             customer.getCustomerType());
                 }
                 System.out.println("+------------+----------------------+------------+------------+-----------------+------------+-----------------------------+-----------------+--------------+");
-
             } else {
                 System.out.println("-> The list is empty !!");
             }
         } catch (Exception e) {
-            System.out.println("Error displaying customers: " + e.getMessage());
+            throw new RuntimeException("Error displaying customers: " + e.getMessage());
         }
     }
 
@@ -78,7 +80,7 @@ public class CustomerService implements ICustomerService {
             customerRepository.writeFile(currentCustomer);
             System.out.println("-> Customers saved to file successfully !!!");
         } catch (Exception e) {
-            System.out.println("Error saving customers to file: " + e.getMessage());
+            throw new RuntimeException("Error saving customers to file: " + e.getMessage());
         }
     }
 

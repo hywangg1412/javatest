@@ -7,6 +7,7 @@ import View.AppTools;
 
 import java.time.LocalDate;
 
+import java.time.temporal.ChronoUnit;
 import java.util.TreeSet;
 
 public class BookingService implements IBookingService {
@@ -147,14 +148,16 @@ public class BookingService implements IBookingService {
 
                 Facility foundFacility = facilityService.findByID(faciID);
 
+                // Increase Usage Count When Creating Booking
                 if (foundFacility != null){
                     Integer usageCount = facilityService.getCurrentFacilities().get(foundFacility);
                     if (usageCount == null){
                         usageCount = 0;
                     }
-                    usageCount++;
+                     usageCount++;
                 }
 
+                // Save
                 if (tools.validateStringInput("-> Do you want to save changes to file (Y/N): ", errMsg).equalsIgnoreCase("Y")) {
                     save();
                 } else {
@@ -165,5 +168,6 @@ public class BookingService implements IBookingService {
             System.out.println("-> Error While Adding Booking: " + e.getMessage());
         }
     }
+
 
 }

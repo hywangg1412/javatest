@@ -37,7 +37,7 @@ public class FacilityService implements IFacilityService {
             System.out.printf("| %-15s | %-20s | %-15s |%n", "Facility ID", "Facility Name", "Usage Count");
             System.out.println("+-----------------+----------------------+-----------------+");
 
-            for (Map.Entry<Facility, Integer> entry : currentFacilities.entrySet()) {
+            for (Map.Entry<Facility, Integer> entry : getCurrentFacilities().entrySet()) {
                 Facility facility = entry.getKey();
                 Integer usageCount = entry.getValue();
                 System.out.printf("| %-15s | %-20s | %-15d |%n",
@@ -63,7 +63,7 @@ public class FacilityService implements IFacilityService {
             currentFacilities.put(entity, 0);
             System.out.println("-> Add Facility Successfully!!");
         } catch (Exception e) {
-            System.out.println("Error adding facility: " + e.getMessage());
+            System.out.println("-> Error adding facility: " + e.getMessage());
         }
     }
 

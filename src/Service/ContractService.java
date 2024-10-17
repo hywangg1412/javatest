@@ -27,9 +27,7 @@ public class ContractService implements IContactService {
         bookingRepository = new BookingRepository();
         contractRepository = new ContractRepository();
         facilityService = new FacilityService();
-
         contractList = contractRepository.readFile();
-
         errMsg = "-> Invalid Input, Please Try Again";
     }
 

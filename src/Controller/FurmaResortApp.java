@@ -210,6 +210,7 @@ public class FurmaResortApp extends Menu {
     }
 
     public void promotionManagement() {
+        PromotionService promotionService = new PromotionService();
         String[] promoOpt = {
                 "Display list customers use service",
                 "Display list customers get voucher",
@@ -218,6 +219,8 @@ public class FurmaResortApp extends Menu {
             @Override
             public void execute(int n) {
                 switch (n) {
+                    case 1 -> promotionService.inputYear();
+                    case 2 -> promotionService.inputVoucher();
                     case 3 -> System.out.println("-> Redirecting....");
                     default -> System.out.println(errMsg);
                 }

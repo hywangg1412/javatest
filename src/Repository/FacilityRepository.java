@@ -65,34 +65,19 @@ public class FacilityRepository implements IFacilityRepository {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(path + facilityPath))) {
             for (Map.Entry<Facility, Integer> entry : facilityList.entrySet()) {
                 Facility facility = entry.getKey();
-                int usageCount = entry.getValue();
 
-                String line = String.join(",",
-                        facility.getFacilityID(),
-                        facility.getFacilityName(),
-                        String.valueOf(facility.getArea()),
-                        String.valueOf(facility.getRentalCost()),
-                        String.valueOf(facility.getMaxPeople()),
-                        facility.getRentalType());
+                String line = facility.getFacilityID() + "," + facility.getFacilityName() + "," + facility.getArea() +
+                        "," +facility.getRentalCost() + "," + facility.getMaxPeople()  + "," +facility.getRentalType();
 
                 if (facility instanceof Villa) {
                     Villa villa = (Villa) facility;
-                    line += String.join(",",
-                            villa.getRoomStandard(),
-                            String.valueOf(villa.getPoolArea()),
-                            String.valueOf(villa.getNumberOfFloor()),
-                            String.valueOf(usageCount));
+                    line += villa.getRoomStandard() + "," + villa.getPoolArea() + "," + villa.getNumberOfFloor();
                 } else if (facility instanceof House) {
                     House house = (House) facility;
-                    line += String.join(",",
-                            house.getRoomStandard(),
-                            String.valueOf(house.getNumberOfFloor()),
-                            String.valueOf(usageCount));
+                    line += house.getRoomStandard() + "," + house.getNumberOfFloor();
                 } else if (facility instanceof Room) {
                     Room room = (Room) facility;
-                    line += String.join(",",
-                            room.getFreeService(),
-                            String.valueOf(usageCount));
+                    line += room.getFreeService();
                 }
                 bw.write(line);
                 bw.newLine();

@@ -82,4 +82,17 @@ public abstract class Person {
     public void setEmail(String email) {
         this.Email = email;
     }
+
+    @Override
+    public String toString() {
+        return "Person{" +
+                "ID='" + ID + '\'' +
+                ", fullName='" + fullName + '\'' +
+                ", DOB=" + DOB +
+                ", Gender=" + Gender +
+                ", CMND='" + CMND + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", Email='" + Email + '\'' +
+                '}';
+    }
 }
