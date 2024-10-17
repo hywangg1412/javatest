@@ -16,7 +16,7 @@ public class PromotionRepository implements IPromotionRepository{
             String line;
             while ((line = br.readLine()) != null) {
                 String[] data = line.split(",");
-                if (data.length < 9) {
+                if (data.length < 10) {
                     continue;
                 }
                 try {
@@ -31,7 +31,8 @@ public class PromotionRepository implements IPromotionRepository{
                             data[5],
                             data[6],
                             data[7],
-                            data[8]
+                            data[8],
+                            Double.parseDouble(data[9])
                     );
                     customerList.add(customer);
                 } catch (Exception e) {

@@ -15,6 +15,13 @@ public class Customer extends Person implements Comparable<Customer>{
         this.customerType = customerType;
     }
 
+    public Customer(String ID, String fullname, LocalDate DOB, boolean gender, String CMND, String phoneNumber, String email, String address, String customerType, double voucher) {
+        super(ID, fullname, DOB, gender, CMND, phoneNumber, email);
+        this.address = address;
+        this.customerType = customerType;
+        this.voucher = voucher;
+    }
+
     public String getAddress() {
         return address;
     }

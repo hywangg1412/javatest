@@ -132,7 +132,6 @@ public class PromotionService implements IPromotionService {
         display();
     }
 
-
     @Override
     public void display() {
         try {
@@ -150,7 +149,6 @@ public class PromotionService implements IPromotionService {
                             customer.getVoucher());
                 }
             }
-
             System.out.println("+------------+----------------------+------------+");
         } catch (Exception e) {
             throw new RuntimeException("-> Error While Displaying Customer " + e.getMessage());
@@ -158,14 +156,10 @@ public class PromotionService implements IPromotionService {
     }
 
     @Override
-    public void add(Object entity) {
-
-    }
+    public void add(Object entity) {}
 
     @Override
-    public void save() {
-
-    }
+    public void save() {}
 
     @Override
     public void update(Object enity) throws IllegalAccessException {

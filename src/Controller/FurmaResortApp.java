@@ -214,6 +214,7 @@ public class FurmaResortApp extends Menu {
         String[] promoOpt = {
                 "Display list customers use service",
                 "Display list customers get voucher",
+                "Display list Customer Have Voucher",
                 "Back main menu"};
         Menu promoMenu = new Menu(promoOpt, "---- PROMOTION MANAGEMENT ----") {
             @Override
@@ -221,7 +222,8 @@ public class FurmaResortApp extends Menu {
                 switch (n) {
                     case 1 -> promotionService.inputYear();
                     case 2 -> promotionService.inputVoucher();
-                    case 3 -> System.out.println("-> Redirecting....");
+                    case 3 -> promotionService.display();
+                    case 4 -> System.out.println("-> Redirecting....");
                     default -> System.out.println(errMsg);
                 }
             }
