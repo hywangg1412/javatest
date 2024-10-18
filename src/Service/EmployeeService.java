@@ -82,8 +82,10 @@ public class EmployeeService implements IEmployeeService {
 
     @Override
     public void update(Employee e) throws IllegalAccessException {
+
         Field[] fields = e.getClass().getSuperclass().getDeclaredFields();
         Field[] subFields = e.getClass().getDeclaredFields();
+
         int totalField = fields.length + subFields.length;
         boolean isEditing = true;
 

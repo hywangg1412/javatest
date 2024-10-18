@@ -173,7 +173,6 @@ public class FacilityService implements IFacilityService {
     public void addFacility(String facilityType, Class<? extends Facility> facilityClass) {
         try {
             String ID;
-
             do {
                 do {
                     ID = tools.validateID(facilityType + " ID", "ID Must Follow SVxx-xxxx", "SV(VL|HO|RO)-\\d{4}");
@@ -222,7 +221,7 @@ public class FacilityService implements IFacilityService {
 
                 int usageCount = currentFacilities.get(newFacility);
 
-                if (usageCount < 5 && usageCount >= 0){
+                if (usageCount < 5 && usageCount >= 0) {
                     incrementUsage(newFacility);
                 } else {
                     resetUsage(newFacility);
@@ -285,24 +284,23 @@ public class FacilityService implements IFacilityService {
         }
     }
 
-    public void incrementUsage(Facility facility){
+    public void incrementUsage(Facility facility) {
         try {
             if (currentFacilities.containsKey(facility)) {
                 currentFacilities.put(facility, currentFacilities.get(facility) + 1);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new RuntimeException("-> Error While Increase Usage Count - " + e.getMessage());
         }
     }
 
-    public void resetUsage(Facility facility){
+    public void resetUsage(Facility facility) {
         try {
-            if (currentFacilities.containsKey(facility)){
+            if (currentFacilities.containsKey(facility)) {
                 currentFacilities.put(facility, 0);
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new RuntimeException("-> Error While Reset Usage Count - " + e.getMessage());
         }
     }
-
 }

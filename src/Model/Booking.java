@@ -23,8 +23,6 @@ public class Booking implements Comparable<Booking> {
         this.serviceID = serviceID;
     }
 
-
-
     public String getBookingID() {
         return bookingID;
     }
@@ -82,7 +80,6 @@ public class Booking implements Comparable<Booking> {
         return dateComparision;
     }
 
-    // Override equals and hashCode to avoid duplicate entries
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

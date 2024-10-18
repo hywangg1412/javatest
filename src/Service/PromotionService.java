@@ -36,8 +36,6 @@ public class PromotionService implements IPromotionService {
         tools = new AppTools();
 
         errMsg = "-> Invalid Input, Try Again";
-
-
     }
 
     public static void main(String[] args) {
@@ -96,7 +94,7 @@ public class PromotionService implements IPromotionService {
             if (booking.getBookingDate().getMonthValue() == now.getMonthValue()) {
                 Customer customer = customerService.findByID(booking.getCustomerID());
                 if (customer != null) {
-                    if (customersWithVouchers.contains(customer)) {
+                    if (!customersWithVouchers.contains(customer)) {
                         customersWithVouchers.push(customer);
                     } else {
                         System.out.println("-> Customer " + customer.getFullName() + " already has a voucher.");
@@ -106,13 +104,14 @@ public class PromotionService implements IPromotionService {
                 }
             }
         }
-
         if (customersWithVouchers.isEmpty()) {
             System.out.println("-> No customers eligible for vouchers this month.");
             return;
         }
-
         List<Customer> tempList = new ArrayList<>(customersWithVouchers);
+//        while (!customersWithVouchers.isEmpty()){
+//            Customer currentCustomer = customersWithVouchers.pop();
+//        }
         try {
             for (Customer customer : tempList) {
                 if (v10 > 0) {
