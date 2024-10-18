@@ -2,6 +2,8 @@ package Repository;
 
 import Model.Customer;
 
+import java.util.List;
+import java.util.Stack;
 import java.util.TreeSet;
 
 public interface IPromotionRepository extends Repository<Customer, TreeSet<Customer>>{
@@ -10,4 +12,6 @@ public interface IPromotionRepository extends Repository<Customer, TreeSet<Custo
     public TreeSet<Customer> readFile();
 
     public void writeFile(TreeSet<Customer> customers);
+
+    public void writeFile(Stack<Customer> customers, List<Double> voucherList);
 }

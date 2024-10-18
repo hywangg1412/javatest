@@ -58,8 +58,7 @@ public class CustomerRepository implements ICustomerRepository {
                     .append(customer.getPhoneNumber()).append(",")
                     .append(customer.getEmail()).append(",")
                     .append(customer.getAddress()).append(",")
-                    .append(customer.getCustomerType())
-                    .append(customer.getVoucher()).append("\n");
+                    .append(customer.getCustomerType()).append("\n");
         }
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(path + customerPath))) {
             bw.write(data.toString());

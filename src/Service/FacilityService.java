@@ -107,8 +107,6 @@ public class FacilityService implements IFacilityService {
         }
     }
 
-
-
     private void displayRooms() {
         try {
             System.out.println("+-----------------+----------------------+-----------------+-----------------+--------------+------------------+-------------------+");

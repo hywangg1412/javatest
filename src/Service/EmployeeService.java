@@ -32,12 +32,12 @@ public class EmployeeService implements IEmployeeService {
     @Override
     public void display() {
         try {
-            if (!currentEmp.isEmpty()) {
+            if (!getCurrentEmp().isEmpty()) {
                 System.out.println("+----------+----------------------+------------+------------+-----------------+------------+-----------------------------+-----------------+--------------+----------+");
                 System.out.printf("| %-8s | %-20s | %-10s | %-10s | %-15s | %-12s | %-27s | %-15s | %-12s | %-8s |\n",
                         "ID", "Full Name", "DOB", "Gender", "CMND", "Phone", "Email", "Degree", "Position", "Salary");
                 System.out.println("+----------+----------------------+------------+------------+-----------------+------------+-----------------------------+-----------------+--------------+----------+");
-                for (Employee employee : currentEmp) {
+                for (Employee employee : getCurrentEmp()) {
                     System.out.printf("| %-8s | %-20s | %-10s | %-10s | %-15s | %-12s | %-27s | %-15s | %-12s | %-8.1f |\n",
                             employee.getID(),
                             employee.getFullName(),
@@ -63,7 +63,7 @@ public class EmployeeService implements IEmployeeService {
     @Override
     public void add(Employee entity) {
         try {
-            currentEmp.add(entity);
+            getCurrentEmp().add(entity);
             System.out.println("-> Employee Added Successfully (not saved to file yet) !!!");
         } catch (Exception e) {
             System.out.println("-> Error adding employee: " + e.getMessage());
@@ -73,7 +73,7 @@ public class EmployeeService implements IEmployeeService {
     @Override
     public void save() {
         try {
-            empRepository.writeFile(currentEmp);
+            empRepository.writeFile(getCurrentEmp());
             System.out.println("-> Employees saved to file successfully !!!");
         } catch (Exception e) {
             System.out.println("-> Error saving employees: " + e.getMessage());

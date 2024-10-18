@@ -98,28 +98,27 @@ public class ContractService implements IContactService {
         try {
             switch (foundFacility.getRentalType().toLowerCase()) {
                 case "day":
-                    return (totalDays * foundFacility.getRentalCost()); // Return total days for daily rental
+                    return (totalDays * foundFacility.getRentalCost());
                 case "week":
-                    return ((totalDays / 7) * foundFacility.getRentalCost()); // Return total weeks for weekly rental
+                    return ((totalDays / 7) * foundFacility.getRentalCost());
                 case "month":
                     int yearDifference = endDate.getYear() - startDate.getYear();
                     int monthDifference = endDate.getMonthValue() - startDate.getMonthValue();
 
-                    // Calculate total months, adjusting for the day of the month
                     int duration = yearDifference * 12 + monthDifference;
 
                     // Adjust if start day is greater than end day
                     if (startDate.getDayOfMonth() > endDate.getDayOfMonth()) {
                         duration--;
                     }
-                    return duration * foundFacility.getRentalCost(); // Return total months for monthly rental
+                    return duration * foundFacility.getRentalCost();
                 default:
                     System.out.println("-> Invalid rental type.");
-                    return 0; // Return 0 if the rental type is not recognized
+                    return 0;
             }
         } catch (Exception e) {
             System.out.println("-> Error While Getting Duration: " + e.getMessage());
-            return 0; // Return 0 in case of error
+            return 0;
         }
     }
 
