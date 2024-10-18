@@ -130,10 +130,6 @@ public class FacilityService implements IFacilityService {
         }
     }
 
-    public void sort() {
-
-    }
-
     @Override
     public void add(Facility entity) {
         try {

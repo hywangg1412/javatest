@@ -178,10 +178,6 @@ public class CustomerService implements ICustomerService {
         return null;
     }
 
-    @Override
-    public void sort() {
-
-    }
 
     public String getCustomerID() {
         String cusID;
@@ -226,6 +222,4 @@ public class CustomerService implements ICustomerService {
             }
         } while (tools.validateStringInput("-> Do you want to continue adding customers (Y/N)", errMsg).equalsIgnoreCase("Y"));
     }
-
-
 }

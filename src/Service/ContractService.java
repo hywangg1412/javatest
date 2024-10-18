@@ -235,10 +235,6 @@ public class ContractService implements IContactService {
         }
     }
 
-    @Override
-    public void sort() {
-        // Implement sorting logic if needed
-    }
 
     public Contract findByContractNum(int contractNum) {
         try {

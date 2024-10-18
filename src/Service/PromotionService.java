@@ -219,8 +219,4 @@ public class PromotionService implements IPromotionService {
         return null;
     }
 
-    @Override
-    public void sort() {
-
-    }
 }

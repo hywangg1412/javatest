@@ -118,11 +118,6 @@ public class BookingService implements IBookingService {
         return null;
     }
 
-    @Override
-    public void sort() {
-
-    }
-
     public void addBooking() {
         try {
             do {
