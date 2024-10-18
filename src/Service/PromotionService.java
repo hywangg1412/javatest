@@ -46,9 +46,7 @@ public class PromotionService implements IPromotionService {
             throw new RuntimeException("-> Error Orcur While Adding Customer To Year List: " + e.getMessage());
         }
 
-        if (customersYearList.isEmpty()) {
-            System.out.println("-> There No Customer In Year " + year);
-        } else {
+        if (!customersYearList.isEmpty()) {
             try {
                 System.out.println("+------------+----------------------+------------+------------+-----------------+------------+-----------------------------+-----------------+--------------+");
                 System.out.printf("| %-10s | %-20s | %-10s | %-10s | %-15s | %-10s | %-27s | %-15s | %-12s |\n",
@@ -70,8 +68,11 @@ public class PromotionService implements IPromotionService {
             } catch (Exception e) {
                 throw new RuntimeException("-> Error While Displaying Customer " + e.getMessage());
             }
+        } else {
+            System.out.println("-> There No Customer In Year " + year);
         }
     }
+
 
     public void inputYear() {
         int year = tools.validateInteger("Enter Year You Want To View", errMsg, 0);
@@ -156,10 +157,12 @@ public class PromotionService implements IPromotionService {
     }
 
     @Override
-    public void add(Object entity) {}
+    public void add(Object entity) {
+    }
 
     @Override
-    public void save() {}
+    public void save() {
+    }
 
     @Override
     public void update(Object enity) throws IllegalAccessException {

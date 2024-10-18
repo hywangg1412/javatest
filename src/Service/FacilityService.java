@@ -63,7 +63,7 @@ public class FacilityService implements IFacilityService {
             currentFacilities.put(entity, 0);
             System.out.println("-> Add Facility Successfully!!");
         } catch (Exception e) {
-            System.out.println("-> Error adding facility: " + e.getMessage());
+            System.out.println("-> `Error adding facility: " + e.getMessage());
         }
     }
 
