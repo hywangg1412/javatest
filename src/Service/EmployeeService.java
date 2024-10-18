@@ -119,7 +119,7 @@ public class EmployeeService implements IEmployeeService {
                         do {
                             ID = tools.validateID("EmployeeID", "ID Must Follow EMP-0000", "EMP-\\d{4}");
                         } while (findByID(ID) != null);
-                        selectedField.set(e,ID);
+                        selectedField.set(e, ID);
                     }
                     case 2 -> {
                         LocalDate DOB = tools.validateDateOfBirth("Employee Date Of Birth", errMsg);

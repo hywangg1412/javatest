@@ -135,21 +135,39 @@ public class FurmaResortApp extends Menu {
     public void facilityManagement() {
         FacilityService facilityService = new FacilityService();
         String[] facilityOpt = {
-                "Add New Villa",
-                "Add New House",
-                "Add New Room",
+                "Add Facility",
                 "Display Facility List",
+                "Display List Facility Maintenance",
                 "Back main menu"};
+
+        String[] subFaci = {
+                "Add Villa",
+                "Add House",
+                "Add Room",
+                "Back To Main Menu"
+        };
         Menu faciMenu = new Menu(facilityOpt, "---- FACILITY MANAGEMENT ----") {
             @Override
             public void execute(int n) {
                 try {
                     switch (n) {
-                        case 1 -> facilityService.addVilla();
-                        case 2 -> facilityService.addHouse();
-                        case 3 -> facilityService.addRoom();
-                        case 4 -> facilityService.display();
-                        case 5 -> System.out.println("-> Redirecting....");
+                        case 1 -> {
+                            Menu subMenu = new Menu(subFaci, "---- ADD FACILITY ----") {
+                                @Override
+                                public void execute(int op) {
+                                    switch (op) {
+                                        case 1 -> facilityService.addVilla();
+                                        case 2 -> facilityService.addHouse();
+                                        case 3 -> facilityService.addRoom();
+                                        case 4 -> System.out.println("-> Redirecting......");
+                                    }
+                                }
+                            };
+                            subMenu.run();
+                        }
+                        case 2 -> facilityService.display();
+                        case 3 -> facilityService.displayMaintenance();
+                        case 4 -> System.out.println("-> Redirecting....");
                         default -> System.out.println(errMsg);
                     }
                 } catch (Exception e) {

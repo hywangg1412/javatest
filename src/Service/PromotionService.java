@@ -15,7 +15,7 @@ public class PromotionService implements IPromotionService {
     PromotionRepository promotionRepository;
 
     AppTools tools;
-    TreeSet<Customer> customersYearList;
+
     TreeSet<Customer> customerWithVoucher;
 
     String errMsg;
@@ -25,7 +25,7 @@ public class PromotionService implements IPromotionService {
         customerService = new CustomerService();
         promotionRepository = new PromotionRepository();
 
-        customersYearList = new TreeSet<>();
+
         customerWithVoucher = promotionRepository.readFile();
 
         tools = new AppTools();
@@ -34,12 +34,12 @@ public class PromotionService implements IPromotionService {
     }
 
     private void showCustomerByYear(int year) {
+        TreeSet<Customer> customersYearList = new TreeSet<>();
         try {
             for (Booking booking : bookingService.getBookingList()) {
-                if (booking.getStartDate().getYear() == year) {
+                if (booking.getBookingDate().getYear() == year) {
                     Customer customer = customerService.findByID(booking.getCustomerID());
                     customersYearList.add(customer);
-                    promotionRepository.writeFile(customersYearList);
                 }
             }
         } catch (Exception e) {
@@ -91,10 +91,14 @@ public class PromotionService implements IPromotionService {
         try {
             LocalDate now = LocalDate.now();
             for (Booking booking : bookingService.getBookingList()) {
-                if (booking.getStartDate().getMonthValue() == now.getMonthValue()) {
+                if (booking.getBookingDate().getMonthValue() == now.getMonthValue()) {
                     Customer customer = customerService.findByID(booking.getCustomerID());
-                    if (customer != null && customer.getVoucher() == 0) {
-                        voucherList.push(customer);
+                    if (customer != null) {
+                        if (!voucherList.contains(customer)){
+                            voucherList.push(customer);
+                        } else {
+                            System.out.println("-> Customer Already In The List.");
+                        }
                     } else {
                         System.out.println("-> Customer With ID " + booking.getCustomerID() + " Not Found.");
                     }

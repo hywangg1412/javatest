@@ -77,5 +77,15 @@ public abstract class Facility {
                 facilityID, facilityName, area, rentalCost, maxPeople, rentalType);
     }
 
-
+    @Override
+    public String toString() {
+        return "Facility{" +
+                "facilityID='" + facilityID + '\'' +
+                ", facilityName='" + facilityName + '\'' +
+                ", area=" + area +
+                ", rentalCost=" + rentalCost +
+                ", maxPeople=" + maxPeople +
+                ", rentalType='" + rentalType + '\'' +
+                '}';
+    }
 }

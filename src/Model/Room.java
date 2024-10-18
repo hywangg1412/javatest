@@ -15,4 +15,11 @@ public class Room extends Facility{
     public void setFreeService(String freeService) {
         this.freeService = freeService;
     }
+
+    @Override
+    public String toString() {
+        return super.toString() + "Room{" +
+                "freeService='" + freeService + '\'' +
+                '}';
+    }
 }

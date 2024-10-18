@@ -108,7 +108,6 @@ public class CustomerService implements ICustomerService {
                 System.out.println("-> Finish Customize");
                 continue;
             }
-
             Field selectedField;
             if (choice <= fields.length) {
                 selectedField = fields[choice - 1];
@@ -160,7 +159,7 @@ public class CustomerService implements ICustomerService {
                 }
                 save();
             } catch (Exception ex) {
-                System.out.println("-> Unexpected error: " + ex.getMessage());
+                System.out.println("-> Error Orcur While Updating Customer - " + ex.getMessage());
             }
         }
     }
