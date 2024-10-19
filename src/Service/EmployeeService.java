@@ -120,41 +120,50 @@ public class EmployeeService implements IEmployeeService {
                         String ID;
                         do {
                             ID = tools.validateID("EmployeeID", "ID Must Follow EMP-0000", "EMP-\\d{4}");
+                            if (findByID(ID) != null){
+                                System.out.println("-> Duplicated ID, Try Again.");
+                            }
                         } while (findByID(ID) != null);
                         selectedField.set(e, ID);
                     }
                     case 2 -> {
+                        String name = tools.normalizeName(tools.validateStringInput("Employee Full Name", errMsg));
+                        selectedField.set(e, name);
+                    }
+                    case 3 -> {
                         LocalDate DOB = tools.validateDateOfBirth("Employee Date Of Birth", errMsg);
                         selectedField.set(e, DOB);
                     }
-                    case 3 -> {
+                    case 4 -> {
+
                         String CMND = tools.validateIDCard("Employee CMND", errMsg);
                         selectedField.set(e, CMND);
                     }
-                    case 4 -> {
+                    case 5 -> {
                         boolean isMale = tools.validateGender("Gender (Male (M) / Female (F))", errMsg).equals("Male");
                         selectedField.set(e, isMale);
                     }
-                    case 5 -> {
+                    case 6 -> {
                         String phoneNum = tools.validatePhoneNumber("Employee Phone Number", errMsg);
                         selectedField.set(e, phoneNum);
                     }
-                    case 6 -> {
+                    case 7 -> {
                         String email = tools.validateEmail("Employee Email", errMsg);
                         selectedField.set(e, email);
                     }
-                    case 7 -> {
+                    case 8 -> {
                         String degree = tools.validateString("Employee Degree", errMsg);
                         selectedField.set(e, degree);
                     }
-                    case 8 -> {
+                    case 9 -> {
                         String position = tools.validateStringInput("Employee Position", errMsg);
                         selectedField.set(e, position);
                     }
-                    case 9 -> {
+                    case 10 -> {
                         double salary = tools.validateSalary("Employee Salary", errMsg);
                         selectedField.set(e, salary);
                     }
+                    default -> System.out.println(errMsg);
                 }
                 save();
             } catch (Exception Ex) {
@@ -163,12 +172,16 @@ public class EmployeeService implements IEmployeeService {
         }
     }
 
+
     public void addEmployee() {
         do {
             try {
                 String ID;
                 do {
                     ID = tools.validateID("EmployeeID", "ID Must Follow EMP-0000", "EMP-\\d{4}");
+                    if (findByID(ID) != null) {
+                        System.out.println("-> Duplicate ID , Try Again");
+                    }
                 } while (findByID(ID) != null);
 
                 String name = tools.normalizeName(tools.validateStringInput("Employee Full Name", errMsg));

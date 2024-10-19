@@ -192,12 +192,9 @@ public class FacilityService implements IFacilityService {
                 } while (maxPeople > 20);
 
                 String rentalType;
-
                 do {
-                    rentalType = rentalType = tools.validateStringInput("Rental Type", errMsg);
-                } while (!rentalType.equalsIgnoreCase("day")
-                        && (!rentalType.equalsIgnoreCase("week")
-                        && !rentalType.equalsIgnoreCase("month")));
+                    rentalType = tools.validateStringInput("Rental Type", errMsg);
+                } while (!rentalType.equalsIgnoreCase("day") && !rentalType.equalsIgnoreCase("week") && !rentalType.equalsIgnoreCase("month"));
 
                 Facility newFacility = null;
 
@@ -217,14 +214,9 @@ public class FacilityService implements IFacilityService {
 
                 if (newFacility != null) {
                     add(newFacility);
-                }
 
-                int usageCount = currentFacilities.get(newFacility);
-
-                if (usageCount < 5 && usageCount >= 0) {
+                    int usageCount = currentFacilities.get(newFacility);
                     incrementUsage(newFacility);
-                } else {
-                    resetUsage(newFacility);
                 }
 
             } while (tools.validateStringInput("-> Do You Want To Continue (Y/N)", "Invalid Input, Try Again").equalsIgnoreCase("Y"));
@@ -236,6 +228,7 @@ public class FacilityService implements IFacilityService {
             System.out.println("Error adding facility: " + e.getMessage());
         }
     }
+
 
     @Override
     public void save() {
@@ -262,7 +255,6 @@ public class FacilityService implements IFacilityService {
         } catch (Exception e) {
             System.out.println("Error finding facility by ID: " + e.getMessage());
         }
-        System.out.println("-> ID Not Found");
         return null;
     }
 

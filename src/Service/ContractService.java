@@ -14,7 +14,7 @@ import java.util.Set;
 
 public class ContractService implements IContactService {
     private final AppTools tools;
-    private final Set<Contract> contractList;
+     Set<Contract> contractList;
     private final ContractRepository contractRepository;
     private final BookingRepository bookingRepository;
     private final FacilityService facilityService;
@@ -29,6 +29,14 @@ public class ContractService implements IContactService {
         facilityService = new FacilityService();
         contractList = contractRepository.readFile();
         errMsg = "-> Invalid Input, Please Try Again";
+    }
+
+    public Set<Contract> getContractList() {
+        return contractList;
+    }
+
+    public void setContractList(Set<Contract> contractList) {
+        this.contractList = contractList;
     }
 
     @Override
@@ -47,6 +55,7 @@ public class ContractService implements IContactService {
     }
 
     public void addContract() {
+        display();
         try {
             if (bookingService.getBookingList().isEmpty()) {
                 System.out.println("-> No bookings available to create a contract.");
@@ -56,7 +65,13 @@ public class ContractService implements IContactService {
             System.out.println("Available Bookings:");
             bookingService.display();
 
-            String bookingID = tools.validateID("Booking ID", "Invalid ID, try again", "^BK\\d{3}$");
+            String bookingID;
+            do {
+                 bookingID = tools.validateID("Booking ID", "Invalid ID, try again", "^BK\\d{3}$");
+                 if (bookingService.findByID(bookingID) == null){
+                     System.out.println("-> Booking ID Not Found ");
+                 }
+            }while (bookingService.findByID(bookingID) == null);
             Booking selectedBooking = bookingService.findByID(bookingID);
 
             if (selectedBooking == null) {
@@ -107,7 +122,6 @@ public class ContractService implements IContactService {
 
                     int duration = yearDifference * 12 + monthDifference;
 
-                    // Adjust if start day is greater than end day
                     if (startDate.getDayOfMonth() > endDate.getDayOfMonth()) {
                         duration--;
                     }
@@ -132,7 +146,7 @@ public class ContractService implements IContactService {
             System.out.println("+---------------+---------------+-------------------+---------------+");
             System.out.printf("| %-13s | %-13s | %-17s | %-13s |\n", "NO", "Booking ID", "Deposit Amount", "Total Payment");
             System.out.println("+---------------+---------------+-------------------+---------------+");
-            for (Contract contract : contractList) {
+            for (Contract contract : getContractList()) {
                 System.out.printf("| %-13d | %-13s | %-17.2f | %-13.2f |\n",
                         contract.getContractNum(),
                         contract.getBookingID(),
@@ -188,10 +202,6 @@ public class ContractService implements IContactService {
                 try {
                     switch (choice) {
                         case 1 -> {
-                            String bookingID = tools.validateID("Booking ID", "Invalid ID, try again", "^BK\\d{3}$");
-                            selectedField.set(c, bookingID);
-                        }
-                        case 2 -> {
                             int contractNum;
                             do {
                                 contractNum = tools.validateInteger("Contract Number", "Invalid number, try again", 0);
@@ -200,6 +210,11 @@ public class ContractService implements IContactService {
                                 }
                             } while (findByContractNum(contractNum) != null);
                             selectedField.set(c, contractNum);
+
+                        }
+                        case 2 -> {
+                            String bookingID = tools.validateID("Booking ID", "Invalid ID, try again", "^BK\\d{3}$");
+                            selectedField.set(c, bookingID);
                         }
                         case 3 -> {
                             double depositAmount = tools.validateDouble("Deposit Amount", "Invalid amount, try again", 1);

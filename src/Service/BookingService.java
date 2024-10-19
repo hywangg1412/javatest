@@ -48,7 +48,7 @@ public class BookingService implements IBookingService {
                 System.out.printf("| %-10s | %-15s | %-12s | %-12s | %-15s | %-12s |\n",
                         "Booking ID", "Booking Date", "Start Date", "End Date", "Customer ID", "Service ID");
                 System.out.println("+------------+-----------------+--------------+--------------+-----------------+--------------+");
-                for (Booking booking : bookingList) {
+                for (Booking booking : getBookingList()) {
                     System.out.printf("| %-10s | %-15s | %-12s | %-12s | %-15s | %-12s |\n",
                             booking.getBookingID(),
                             AppTools.localDateToString(booking.getBookingDate()),

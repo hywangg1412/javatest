@@ -121,6 +121,9 @@ public class CustomerService implements ICustomerService {
                         String ID;
                         do {
                             ID = tools.validateID("Customer ID", "ID Must Follow CUS-0000", "CUS-\\d{4}");
+                            if (findByID(ID) != null){
+                                System.out.println("-> Duplicated ID, Try Again.");
+                            }
                         } while (findByID(ID) != null);
                     }
                     case 2 -> {
@@ -201,6 +204,9 @@ public class CustomerService implements ICustomerService {
                 String ID;
                 do {
                     ID = tools.validateID("Customer ID", "ID Must Follow CUS-0000", "CUS-\\d{4}");
+                    if (findByID(ID) != null){
+                        System.out.println("-> Duplicated ID, Try Again.");
+                    }
                 } while (findByID(ID) != null);
 
                 String name = tools.normalizeName(tools.validateStringInput("Customer Full Name", errMsg));
