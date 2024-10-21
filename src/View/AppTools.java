@@ -37,7 +37,7 @@ public class AppTools {
             String input = scanner.nextLine().trim();
 
             if (input.isEmpty()) {
-                System.out.println(errorMsg + " - Input cannot be empty.");
+                printErrorMessage(errorMsg + " - Input cannot be empty.");
                 continue;
             }
 
@@ -46,10 +46,10 @@ public class AppTools {
                 if (value > minValue) {
                     return value;
                 } else {
-                    System.out.println(errorMsg + " - Value must be greater than " + minValue + ".");
+                    printErrorMessage(errorMsg + " - Value must be greater than " + minValue + ".");
                 }
             } catch (NumberFormatException e) {
-                System.out.println(errorMsg + " - Please enter a valid number.");
+                printErrorMessage(errorMsg + " - Please enter a valid number.");
             }
         }
     }
@@ -62,7 +62,7 @@ public class AppTools {
             String input = scanner.nextLine().trim();
 
             if (input.isEmpty()) {
-                System.out.println(errorMsg + " - Input cannot be empty.");
+                printErrorMessage(errorMsg + " - Input cannot be empty.");
                 continue;
             }
 
@@ -71,10 +71,10 @@ public class AppTools {
                 if (minValue == null || value >= minValue) {
                     return value;
                 } else {
-                    System.out.println(errorMsg + " - Value must be at least " + minValue + ".");
+                    printErrorMessage(errorMsg + " - Value must be at least " + minValue + ".");
                 }
             } catch (NumberFormatException e) {
-                System.out.println(errorMsg + " - Please enter a valid integer.");
+                printErrorMessage(errorMsg + " - Please enter a valid integer.");
             }
         }
     }
