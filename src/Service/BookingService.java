@@ -6,25 +6,20 @@ import Repository.BookingRepository;
 import View.AppTools;
 
 import java.time.LocalDate;
-
 import java.util.TreeSet;
 
 public class BookingService implements IBookingService {
-    public TreeSet<Booking> bookingList;
+    private TreeSet<Booking> bookingList;
     private final BookingRepository bkRepository;
-
     private final String errMsg;
-
     private final CustomerService customerService;
     private final FacilityService facilityService;
 
     public BookingService() {
         bkRepository = new BookingRepository();
         bookingList = bkRepository.readFile();
-
         customerService = new CustomerService();
         facilityService = new FacilityService();
-
         errMsg = "-> Invalid Input, Try Again.";
     }
 
@@ -38,30 +33,27 @@ public class BookingService implements IBookingService {
 
     @Override
     public void display() {
-        try {
-            if (!bookingList.isEmpty()) {
-                System.out.println("+------------+-----------------+--------------+--------------+-----------------+--------------+");
-                System.out.printf("| %-10s | %-15s | %-12s | %-12s | %-15s | %-12s |\n",
-                        "Booking ID", "Booking Date", "Start Date", "End Date", "Customer ID", "Service ID");
-                System.out.println("+------------+-----------------+--------------+--------------+-----------------+--------------+");
-                for (Booking booking : getBookingList()) {
-                    System.out.printf("| %-10s | %-15s | %-12s | %-12s | %-15s | %-12s |\n",
-                            booking.getBookingID(),
-                            AppTools.localDateToString(booking.getBookingDate()),
-                            AppTools.localDateToString(booking.getStartDate()),
-                            AppTools.localDateToString(booking.getEndDate()),
-                            booking.getCustomerID(),
-                            booking.getServiceID());
-
-                }
-                System.out.println("+------------+-----------------+--------------+--------------+-----------------+--------------+");
-
-            } else {
-                System.out.println("-> The List Is Empty.");
-            }
-        } catch (Exception e) {
-            System.out.println("-> Error While Displaying Booking List: " + e.getMessage());
+        if (bookingList.isEmpty()) {
+            System.out.println("-> The List Is Empty.");
+            return;
         }
+
+        System.out.println("+------------+-----------------+--------------+--------------+-----------------+--------------+");
+        System.out.printf("| %-10s | %-15s | %-12s | %-12s | %-15s | %-12s |\n",
+                "Booking ID", "Booking Date", "Start Date", "End Date", "Customer ID", "Service ID");
+        System.out.println("+------------+-----------------+--------------+--------------+-----------------+--------------+");
+
+        for (Booking booking : bookingList) {
+            System.out.printf("| %-10s | %-15s | %-12s | %-12s | %-15s | %-12s |\n",
+                    booking.getBookingID(),
+                    AppTools.localDateToString(booking.getBookingDate()),
+                    AppTools.localDateToString(booking.getStartDate()),
+                    AppTools.localDateToString(booking.getEndDate()),
+                    booking.getCustomerID(),
+                    booking.getServiceID());
+        }
+
+        System.out.println("+------------+-----------------+--------------+--------------+-----------------+--------------+");
     }
 
     @Override
@@ -87,9 +79,9 @@ public class BookingService implements IBookingService {
     @Override
     public void update(Booking updatedBooking) {
         try {
-            Booking existBooking = findByID(updatedBooking.getBookingID());
-            if (existBooking != null) {
-                bookingList.remove(existBooking);
+            Booking existingBooking = findByID(updatedBooking.getBookingID());
+            if (existingBooking != null) {
+                bookingList.remove(existingBooking);
                 bookingList.add(updatedBooking);
                 System.out.println("-> Booking ID " + updatedBooking.getBookingID() + " Updated Successfully!");
             } else {
@@ -102,14 +94,10 @@ public class BookingService implements IBookingService {
 
     @Override
     public Booking findByID(String ID) {
-        try {
-            for (Booking b : bookingList) {
-                if (b.getBookingID().equalsIgnoreCase(ID)) {
-                    return b;
-                }
+        for (Booking b : bookingList) {
+            if (b.getBookingID().equalsIgnoreCase(ID)) {
+                return b;
             }
-        } catch (Exception e) {
-            System.out.println("-> Error While Finding Booking by ID " + ID + ": " + e.getMessage());
         }
         return null;
     }
@@ -117,38 +105,30 @@ public class BookingService implements IBookingService {
     public void addBooking() {
         try {
             do {
-                customerService.display();
                 String cusID = customerService.getCustomerID();
-
-                facilityService.display();
                 String faciID = facilityService.getFacilityID();
 
                 String bookingID;
                 do {
                     bookingID = AppTools.validateID("Booking ID", errMsg, "^BK\\d{3}$");
-                    if (findByID(bookingID) != null){
-                        System.out.println("-> Duplicated ID , Try Again.");
+                    if (findByID(bookingID) != null) {
+                        System.out.println("-> Duplicated ID, Try Again.");
                     }
-                }while (findByID(bookingID) != null);
+                } while (findByID(bookingID) != null);
 
                 LocalDate bookingDate = AppTools.validateBookingDate("Booking Date", errMsg);
                 LocalDate startDate = AppTools.validateStartDate(bookingDate, "Start Date", errMsg);
                 LocalDate endDate = AppTools.validateEndDate(startDate, "End Date", errMsg);
 
-                add(new Booking(bookingID, AppTools.localDateToString(bookingDate), AppTools.localDateToString(startDate), AppTools.localDateToString(endDate), cusID, faciID));
+                add(new Booking(bookingID, AppTools.localDateToString(bookingDate),
+                        AppTools.localDateToString(startDate),
+                        AppTools.localDateToString(endDate), cusID, faciID));
 
                 Facility foundFacility = facilityService.findByID(faciID);
-
-                // Increase Usage Count When Creating Booking
-                if (foundFacility != null){
-                    Integer usageCount = facilityService.getCurrentFacilities().get(foundFacility);
-                    if (usageCount == null){
-                        usageCount = 0;
-                    }
-                     usageCount++;
+                if (foundFacility != null) {
+                    Integer usageCount = facilityService.getCurrentFacilities().getOrDefault(foundFacility, 0) + 1;
                 }
 
-                // Save
                 if (AppTools.validateStringInput("-> Do you want to save changes to file (Y/N): ", errMsg).equalsIgnoreCase("Y")) {
                     save();
                 } else {
@@ -159,6 +139,5 @@ public class BookingService implements IBookingService {
             System.out.println("-> Error While Adding Booking: " + e.getMessage());
         }
     }
-
 
 }

@@ -11,7 +11,7 @@ import java.util.*;
 
 public class FacilityService implements IFacilityService {
     private final FacilityRepository faciRepository;
-    LinkedHashMap<Facility, Integer> currentFacilities;
+    private LinkedHashMap<Facility, Integer> currentFacilities;
     private final String errMsg;
 
     public FacilityService() {
@@ -44,7 +44,7 @@ public class FacilityService implements IFacilityService {
         System.out.printf("| %-15s | %-20s | %-15s | %-20s |%n", "Facility ID", "Facility Name", "Usage Count", "Status");
         System.out.println("+-----------------+----------------------+-----------------+----------------------+");
 
-        for (Map.Entry<Facility, Integer> entry : getCurrentFacilities().entrySet()) {
+        for (Map.Entry<Facility, Integer> entry : currentFacilities.entrySet()) {
             Facility facility = entry.getKey();
             Integer usageCount = entry.getValue();
             String usageStatus = (usageCount > 5) ? "Need Maintenance" : "Good Condition";
@@ -77,7 +77,7 @@ public class FacilityService implements IFacilityService {
 
             System.out.println("+-----------------+----------------------+-----------------+-----------------+--------------+------------------+--------------------+-------------------+-----------------+");
         } catch (Exception e) {
-            System.out.println("Error displaying Villas: " + e.getMessage());
+            System.out.println("-> Error displaying Villas: " + e.getMessage());
         }
     }
 
@@ -131,7 +131,7 @@ public class FacilityService implements IFacilityService {
             currentFacilities.put(entity, 0);
             System.out.println("-> Add Facility Successfully!!");
         } catch (Exception e) {
-            System.out.println("-> `Error adding facility: " + e.getMessage());
+            System.out.println("-> Error adding facility: " + e.getMessage());
         }
     }
 
@@ -140,7 +140,7 @@ public class FacilityService implements IFacilityService {
         try {
             addFacility("Villa", Villa.class);
         } catch (Exception e) {
-            System.out.println("Error adding villa: " + e.getMessage());
+            System.out.println("-> Error adding villa: " + e.getMessage());
         }
     }
 
@@ -150,7 +150,7 @@ public class FacilityService implements IFacilityService {
             addFacility("House", House.class);
             display();
         } catch (Exception e) {
-            System.out.println("Error adding house: " + e.getMessage());
+            System.out.println("-> Error adding house: " + e.getMessage());
         }
     }
 
@@ -160,67 +160,62 @@ public class FacilityService implements IFacilityService {
             addFacility("Room", Room.class);
             display();
         } catch (Exception e) {
-            System.out.println("Error adding room: " + e.getMessage());
+            System.out.println("-> Error adding room: " + e.getMessage());
         }
     }
 
-    // Class<? extends Facility> -> chi lop Facility hoac cac lop con cua facility
     public void addFacility(String facilityType, Class<? extends Facility> facilityClass) {
         try {
             String ID;
             do {
-                do {
-                    ID = View.AppTools.validateID(facilityType + " ID", "ID Must Follow SVxx-xxxx", "SV(VL|HO|RO)-\\d{4}");
-                    if (findByID(ID) != null) {
-                        System.out.println("-> ID Already Exist, Try New One");
-                    }
-                } while (findByID(ID) != null);
-
-                String facilityName = View.AppTools.validateStringInput(facilityType + " Name", errMsg);
-
-                double area = View.AppTools.validateDouble("Area", errMsg, 30);
-
-                double rentalCost = View.AppTools.validateDouble("Rental Cost", errMsg, 0);
-                int maxPeople;
-                do {
-                    maxPeople = View.AppTools.validateInteger("Max People", errMsg, 0);
-                } while (maxPeople > 20);
-
-                String rentalType;
-                do {
-                    rentalType = View.AppTools.validateStringInput("Rental Type", errMsg);
-                } while (!rentalType.equalsIgnoreCase("day") && !rentalType.equalsIgnoreCase("week") && !rentalType.equalsIgnoreCase("month"));
-
-                Facility newFacility = null;
-
-                if (facilityClass == Villa.class) {
-                    String roomStandard = View.AppTools.validateStringInput("Room Standard", errMsg);
-                    double poolArea = View.AppTools.validateDouble("Pool Area", errMsg, 30);
-                    int numberOfFloor = View.AppTools.validateInteger("Number Of Floor", errMsg, 0);
-                    newFacility = new Villa(ID, facilityName, area, rentalCost, maxPeople, rentalType, roomStandard, poolArea, numberOfFloor);
-                } else if (facilityClass == House.class) {
-                    String roomStandard = View.AppTools.validateStringInput("Room Standard", errMsg);
-                    int numberOfFloor = View.AppTools.validateInteger("Number Of Floor", errMsg, 0);
-                    newFacility = new House(ID, facilityName, area, rentalCost, maxPeople, rentalType, roomStandard, numberOfFloor);
-                } else if (facilityClass == Room.class) {
-                    String freeService = View.AppTools.validateStringInput("Free Service", errMsg);
-                    newFacility = new Room(ID, facilityName, area, rentalCost, maxPeople, rentalType, freeService);
+                ID = AppTools.validateID(facilityType + " ID", "ID Must Follow SVxx-xxxx", "SV(VL|HO|RO)-\\d{4}");
+                if (findByID(ID) != null) {
+                    System.out.println("-> ID Already Exist, Try New One");
                 }
+            } while (findByID(ID) != null);
 
-                if (newFacility != null) {
-                    add(newFacility);
+            String facilityName = AppTools.validateStringInput(facilityType + " Name", errMsg);
+            double area = AppTools.validateDouble("Area", errMsg, 30);
+            double rentalCost = AppTools.validateDouble("Rental Cost", errMsg, 0);
+            int maxPeople;
+            do {
+                maxPeople = AppTools.validateInteger("Max People", errMsg, 0);
+            } while (maxPeople > 20);
 
-                    int usageCount = currentFacilities.get(newFacility);
-                    incrementUsage(newFacility);
-                }
+            String rentalType;
+            do {
+                rentalType = AppTools.validateStringInput("Rental Type", errMsg);
+            } while (!rentalType.equalsIgnoreCase("day") && !rentalType.equalsIgnoreCase("week") && !rentalType.equalsIgnoreCase("month"));
 
-            } while (View.AppTools.validateStringInput("-> Do You Want To Continue (Y/N)", "Invalid Input, Try Again").equalsIgnoreCase("Y"));
+            Facility newFacility = null;
 
-            if (View.AppTools.validateStringInput("-> Do you want to save changes to file (Y/N): ", errMsg).equalsIgnoreCase("Y")) {
-                save();
+            if (facilityClass == Villa.class) {
+                String roomStandard = AppTools.validateStringInput("Room Standard", errMsg);
+                double poolArea = AppTools.validateDouble("Pool Area", errMsg, 30);
+                int numberOfFloor = AppTools.validateInteger("Number Of Floor", errMsg, 0);
+                newFacility = new Villa(ID, facilityName, area, rentalCost, maxPeople, rentalType, roomStandard, poolArea, numberOfFloor);
+            } else if (facilityClass == House.class) {
+                String roomStandard = AppTools.validateStringInput("Room Standard", errMsg);
+                int numberOfFloor = AppTools.validateInteger("Number Of Floor", errMsg, 0);
+                newFacility = new House(ID, facilityName, area, rentalCost, maxPeople, rentalType, roomStandard, numberOfFloor);
+            } else if (facilityClass == Room.class) {
+                String freeService = AppTools.validateStringInput("Free Service", errMsg);
+                newFacility = new Room(ID, facilityName, area, rentalCost, maxPeople, rentalType, freeService);
             }
+
+            if (newFacility != null) {
+                add(newFacility);
+                incrementUsage(newFacility);
+            }
+
+            while (AppTools.validateStringInput("-> Do You Want To Continue (Y/N)", "Invalid Input, Try Again").equalsIgnoreCase("Y"));
+
         } catch (Exception e) {
-            System.out.println("Error adding facility: " + e.getMessage());
+            System.out.println("-> Error while adding facility: " + e.getMessage());
+        }
+
+        if (AppTools.validateStringInput("-> Do you want to save changes to file (Y/N): ", errMsg).equalsIgnoreCase("Y")) {
+            save();
         }
     }
 
@@ -231,12 +226,13 @@ public class FacilityService implements IFacilityService {
             faciRepository.writeFile(currentFacilities);
             System.out.println("-> Facilities saved to file successfully !!!");
         } catch (Exception e) {
-            System.out.println("Error saving facilities to file: " + e.getMessage());
+            System.out.println("-> Error saving facilities to file: " + e.getMessage());
         }
     }
 
     @Override
     public void update(Facility f) {
+        // Update functionality can be implemented here
     }
 
     @Override
@@ -248,7 +244,7 @@ public class FacilityService implements IFacilityService {
                 }
             }
         } catch (Exception e) {
-            System.out.println("Error finding facility by ID: " + e.getMessage());
+            System.out.println("-> Error finding facility by ID: " + e.getMessage());
         }
         return null;
     }
@@ -257,7 +253,7 @@ public class FacilityService implements IFacilityService {
         String faciID;
         try {
             do {
-                faciID = View.AppTools.validateID("Facility ID", "ID Must Follow SVxx-xxxx", "SV(VL|HO|RO)-\\d{4}");
+                faciID = AppTools.validateID("Facility ID", "ID Must Follow SVxx-xxxx", "SV(VL|HO|RO)-\\d{4}");
                 Facility facility = findByID(faciID);
                 if (facility != null) {
                     return faciID;
@@ -277,8 +273,7 @@ public class FacilityService implements IFacilityService {
                 currentFacilities.put(facility, currentFacilities.get(facility) + 1);
             }
         } catch (Exception e) {
-            throw new RuntimeException("-> Error While Increase Usage Count - " + e.getMessage());
+            throw new RuntimeException("-> Error While Increasing Usage Count - " + e.getMessage());
         }
     }
-
 }

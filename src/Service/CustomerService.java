@@ -12,16 +12,7 @@ public class CustomerService implements ICustomerService {
     private final CustomerRepository customerRepository;
     private final String errMsg;
     private final String updatedMsg;
-
-    public ArrayList<Customer> getCurrentCustomer() {
-        return currentCustomer;
-    }
-
-    public void setCurrentCustomer(ArrayList<Customer> currentCustomer) {
-        this.currentCustomer = currentCustomer;
-    }
-
-    ArrayList<Customer> currentCustomer;
+    private ArrayList<Customer> currentCustomer;
 
     public CustomerService() {
         customerRepository = new CustomerRepository();
@@ -30,7 +21,13 @@ public class CustomerService implements ICustomerService {
         updatedMsg = "Updated Successfully !!!";
     }
 
+    public ArrayList<Customer> getCurrentCustomer() {
+        return currentCustomer;
+    }
 
+    public void setCurrentCustomer(ArrayList<Customer> currentCustomer) {
+        this.currentCustomer = currentCustomer;
+    }
 
     @Override
     public void display() {
@@ -60,7 +57,6 @@ public class CustomerService implements ICustomerService {
             throw new RuntimeException("Error displaying customers: " + e.getMessage());
         }
     }
-
 
     @Override
     public void add(Customer entity) {
@@ -113,54 +109,54 @@ public class CustomerService implements ICustomerService {
                 selectedField = subFields[choice - fields.length - 1];
             }
             selectedField.setAccessible(true);
-            try{
-                switch (choice){
+            try {
+                switch (choice) {
                     case 1 -> {
                         String ID;
                         do {
                             ID = AppTools.validateID("Customer ID", "ID Must Follow CUS-0000", "CUS-\\d{4}");
-                            if (findByID(ID) != null){
+                            if (findByID(ID) != null) {
                                 System.out.println("-> Duplicated ID, Try Again.");
                             }
                         } while (findByID(ID) != null);
                     }
                     case 2 -> {
                         String name = AppTools.normalizeName(AppTools.validateStringInput("Customer Full Name", errMsg));
-                        selectedField.set(c,name);
+                        selectedField.set(c, name);
                     }
                     case 3 -> {
                         LocalDate DOB = AppTools.validateDateOfBirth("Customer Date Of Birth", errMsg);
-                        selectedField.set(c,DOB);
+                        selectedField.set(c, DOB);
                     }
                     case 4 -> {
                         String CMND = AppTools.validateIDCard("Customer CMND", errMsg);
-                        selectedField.set(c,CMND);
+                        selectedField.set(c, CMND);
                     }
-                    case 5 ->{
+                    case 5 -> {
                         boolean isMale = AppTools.validateGender("Gender (Male (M) / Female (F))", errMsg).equalsIgnoreCase("Male");
-                        selectedField.set(c,isMale);
+                        selectedField.set(c, isMale);
                     }
-                    case 6 ->{
+                    case 6 -> {
                         String phoneNum = AppTools.validatePhoneNumber("Customer Phone Number", errMsg);
-                        selectedField.set(c,phoneNum);
+                        selectedField.set(c, phoneNum);
                     }
-                    case 7 ->{
+                    case 7 -> {
                         String email = AppTools.validateEmail("Customer Email", errMsg);
-                        selectedField.set(c,email);
+                        selectedField.set(c, email);
                     }
-                    case 8 ->{
+                    case 8 -> {
                         String address = AppTools.validateStringInput("Customer Address", errMsg);
-                        selectedField.set(c,address);
+                        selectedField.set(c, address);
                     }
-                    case 9 ->{
+                    case 9 -> {
                         String type = AppTools.validateStringInput("Customer Type", errMsg);
-                        selectedField.set(c,type);
+                        selectedField.set(c, type);
                     }
                     default -> System.out.println(errMsg);
                 }
                 save();
             } catch (Exception ex) {
-                System.out.println("-> Error Orcur While Updating Customer - " + ex.getMessage());
+                System.out.println("-> Error Occurred While Updating Customer - " + ex.getMessage());
             }
         }
     }
@@ -178,7 +174,6 @@ public class CustomerService implements ICustomerService {
         }
         return null;
     }
-
 
     public String getCustomerID() {
         String cusID;
@@ -202,7 +197,7 @@ public class CustomerService implements ICustomerService {
                 String ID;
                 do {
                     ID = AppTools.validateID("Customer ID", "ID Must Follow CUS-0000", "CUS-\\d{4}");
-                    if (findByID(ID) != null){
+                    if (findByID(ID) != null) {
                         System.out.println("-> Duplicated ID, Try Again.");
                     }
                 } while (findByID(ID) != null);

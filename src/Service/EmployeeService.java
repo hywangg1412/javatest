@@ -12,7 +12,7 @@ public class EmployeeService implements IEmployeeService {
     private final EmployeeRepository empRepository;
     private final AppTools tools;
     private final String errMsg;
-    ArrayList<Employee> currentEmp;
+    private ArrayList<Employee> currentEmp;
 
     public EmployeeService() {
         empRepository = new EmployeeRepository();
@@ -51,7 +51,6 @@ public class EmployeeService implements IEmployeeService {
                             employee.getSalary());
                 }
                 System.out.println("+----------+----------------------+------------+------------+-----------------+------------+-----------------------------+-----------------+--------------+----------+");
-
             } else {
                 System.out.println("-> The list is empty !!");
             }
@@ -82,7 +81,6 @@ public class EmployeeService implements IEmployeeService {
 
     @Override
     public void update(Employee e) throws IllegalAccessException {
-
         Field[] fields = e.getClass().getSuperclass().getDeclaredFields();
         Field[] subFields = e.getClass().getDeclaredFields();
 
@@ -120,7 +118,7 @@ public class EmployeeService implements IEmployeeService {
                         String ID;
                         do {
                             ID = AppTools.validateID("EmployeeID", "ID Must Follow EMP-0000", "EMP-\\d{4}");
-                            if (findByID(ID) != null){
+                            if (findByID(ID) != null) {
                                 System.out.println("-> Duplicated ID, Try Again.");
                             }
                         } while (findByID(ID) != null);
@@ -135,7 +133,6 @@ public class EmployeeService implements IEmployeeService {
                         selectedField.set(e, DOB);
                     }
                     case 4 -> {
-
                         String CMND = AppTools.validateIDCard("Employee CMND", errMsg);
                         selectedField.set(e, CMND);
                     }
@@ -160,7 +157,7 @@ public class EmployeeService implements IEmployeeService {
                         selectedField.set(e, position);
                     }
                     case 10 -> {
-                        double salary = AppTools.validateDouble("Employee Salary", errMsg,0);
+                        double salary = AppTools.validateDouble("Employee Salary", errMsg, 0);
                         selectedField.set(e, salary);
                     }
                     default -> System.out.println(errMsg);
@@ -172,7 +169,6 @@ public class EmployeeService implements IEmployeeService {
         }
     }
 
-
     public void addEmployee() {
         do {
             try {
@@ -180,7 +176,7 @@ public class EmployeeService implements IEmployeeService {
                 do {
                     ID = AppTools.validateID("EmployeeID", "ID Must Follow EMP-0000", "EMP-\\d{4}");
                     if (findByID(ID) != null) {
-                        System.out.println("-> Duplicate ID , Try Again");
+                        System.out.println("-> Duplicate ID, Try Again");
                     }
                 } while (findByID(ID) != null);
 
@@ -192,7 +188,7 @@ public class EmployeeService implements IEmployeeService {
                 String email = AppTools.validateEmail("Employee Email", errMsg);
                 String degree = AppTools.validateString("Employee Degree", errMsg);
                 String position = AppTools.validateStringInput("Employee Position", errMsg);
-                double salary = AppTools.validateDouble("Employee Salary", errMsg,0);
+                double salary = AppTools.validateDouble("Employee Salary", errMsg, 0);
 
                 add(new Employee(ID, name, DOB, isMale, CMND, phoneNum, email, degree, position, salary));
 
@@ -214,5 +210,4 @@ public class EmployeeService implements IEmployeeService {
         }
         return null;
     }
-
 }

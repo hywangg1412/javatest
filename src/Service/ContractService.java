@@ -13,7 +13,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.Set;
 
 public class ContractService implements IContactService {
-    private final AppTools tools;
     Set<Contract> contractList;
     private final ContractRepository contractRepository;
     private final BookingRepository bookingRepository;
@@ -23,7 +22,6 @@ public class ContractService implements IContactService {
 
     public ContractService() {
         bookingService = new BookingService();
-        tools = new AppTools();
         bookingRepository = new BookingRepository();
         contractRepository = new ContractRepository();
         facilityService = new FacilityService();
@@ -67,7 +65,7 @@ public class ContractService implements IContactService {
 
             String bookingID;
             do {
-                bookingID = tools.validateID("Booking ID", "Invalid ID, try again", "^BK\\d{3}$");
+                bookingID = AppTools.validateID("Booking ID", "Invalid ID, try again", "^BK\\d{3}$");
                 if (bookingService.findByID(bookingID) == null) {
                     System.out.println("-> Booking ID Not Found ");
                 }
@@ -81,13 +79,13 @@ public class ContractService implements IContactService {
 
             int contractNum;
             do {
-                contractNum = tools.validateInteger("Contract Number", "Invalid number, try again", 0);
+                contractNum = AppTools.validateInteger("Contract Number", "Invalid number, try again", 0);
                 if (findByContractNum(contractNum) != null) {
                     System.out.println("-> Duplicated Contract Num, Try Another One");
                 }
             } while (findByContractNum(contractNum) != null);
 
-            double depositAmount = tools.validateDouble("Deposit Amount", "Invalid amount, try again", 0);
+            double depositAmount = AppTools.validateDouble("Deposit Amount", "Invalid amount, try again", 0);
             double totalAmount = getTotalPayment(bookingID) - depositAmount;
             Contract newContract = new Contract(contractNum, bookingID, depositAmount, totalAmount);
             add(newContract);
@@ -116,7 +114,6 @@ public class ContractService implements IContactService {
             case "day" -> baseCost = totalDays * foundFacility.getRentalCost();
             case "week" -> baseCost = (totalDays / 7) * foundFacility.getRentalCost();
             case "month" -> baseCost = (totalDays / 30) * foundFacility.getRentalCost();
-
             default -> System.out.println("-> Invalid rental type.");
         }
 
@@ -129,7 +126,6 @@ public class ContractService implements IContactService {
         }
         return (baseCost + areaCost) * foundFacility.getRentalCost();
     }
-
 
     @Override
     public void display() {
@@ -149,7 +145,6 @@ public class ContractService implements IContactService {
                         contract.getTotalPayment());
             }
             System.out.println("+---------------+---------------+-------------------+---------------+");
-
         } catch (Exception e) {
             System.out.println("-> Error while displaying contracts: " + e.getMessage());
         }
@@ -178,7 +173,7 @@ public class ContractService implements IContactService {
                 }
                 System.out.println((totalFields + 1) + ". Finish Customize");
 
-                int choice = tools.validateInteger("Enter Your Choice", errMsg, 1);
+                int choice = AppTools.validateInteger("Enter Your Choice", errMsg, 1);
 
                 if (choice == totalFields + 1) {
                     isUpdate = false;
@@ -199,24 +194,23 @@ public class ContractService implements IContactService {
                         case 1 -> {
                             int contractNum;
                             do {
-                                contractNum = tools.validateInteger("Contract Number", "Invalid number, try again", 0);
+                                contractNum = AppTools.validateInteger("Contract Number", "Invalid number, try again", 0);
                                 if (findByContractNum(contractNum) != null) {
                                     System.out.println("-> Duplicated Contract Num, Try Another One");
                                 }
                             } while (findByContractNum(contractNum) != null);
                             selectedField.set(c, contractNum);
-
                         }
                         case 2 -> {
-                            String bookingID = tools.validateID("Booking ID", "Invalid ID, try again", "^BK\\d{3}$");
+                            String bookingID = AppTools.validateID("Booking ID", "Invalid ID, try again", "^BK\\d{3}$");
                             selectedField.set(c, bookingID);
                         }
                         case 3 -> {
-                            double depositAmount = tools.validateDouble("Deposit Amount", "Invalid amount, try again", 1);
+                            double depositAmount = AppTools.validateDouble("Deposit Amount", "Invalid amount, try again", 1);
                             selectedField.set(c, depositAmount);
                         }
                         case 4 -> {
-                            double totalAmount = tools.validateDouble("Total Amount", errMsg, 1);
+                            double totalAmount = AppTools.validateDouble("Total Amount", errMsg, 1);
                             selectedField.set(c, totalAmount);
                         }
                     }
@@ -244,7 +238,6 @@ public class ContractService implements IContactService {
             return null;
         }
     }
-
 
     public Contract findByContractNum(int contractNum) {
         try {
