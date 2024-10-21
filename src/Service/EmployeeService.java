@@ -10,14 +10,12 @@ import java.util.ArrayList;
 
 public class EmployeeService implements IEmployeeService {
     private final EmployeeRepository empRepository;
-    private final AppTools tools;
     private final String errMsg;
     private ArrayList<Employee> currentEmp;
-
     public EmployeeService() {
         empRepository = new EmployeeRepository();
         currentEmp = empRepository.readFile();
-        tools = new AppTools();
+
         errMsg = "-> Invalid Input, Try Again";
     }
 
