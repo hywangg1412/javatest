@@ -40,25 +40,24 @@ public class EmployeeRepository implements IEmployeeRepository {
 
     @Override
     public void writeFile(ArrayList<Employee> entities) {
-        StringBuilder data = new StringBuilder();
-        for (Employee employee : entities) {
-            data.append(employee.getID()).append(",")
-                    .append(employee.getFullName()).append(",")
-                    .append(employee.getDOB()).append(",")
-                    .append(employee.isGender() ? "Male" : "Female").append(",")
-                    .append(employee.getCMND()).append(",")
-                    .append(employee.getPhoneNumber()).append(",")
-                    .append(employee.getEmail()).append(",")
-                    .append(employee.getDegree()).append(",")
-                    .append(employee.getPosition()).append(",")
-                    .append(employee.getSalary()).append("\n");
-        }
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(path + employeePath))){
-            bw.write(data.toString());
-        } catch (IOException e){
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(path + employeePath))) {
+            for (Employee employee : entities) {
+                String line = employee.getID() + ","
+                        + employee.getFullName() + ","
+                        + employee.getDOB() + ","
+                        + (employee.isGender() ? "Male" : "Female") + ","
+                        + employee.getCMND() + ","
+                        + employee.getPhoneNumber() + ","
+                        + employee.getEmail() + ","
+                        + employee.getDegree() + ","
+                        + employee.getPosition() + ","
+                        + employee.getSalary();
+
+                bw.write(line);
+                bw.newLine();
+            }
+        } catch (IOException e) {
             throw new RuntimeException("-> Error Writing to file", e);
         }
     }
-
-
 }

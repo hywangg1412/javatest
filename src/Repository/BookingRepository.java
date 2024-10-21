@@ -39,19 +39,21 @@ public class BookingRepository implements IBookingRepository{
 
     @Override
     public void writeFile(TreeSet<Booking> entities) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(path + bookingPath))){
-            for (Booking booking :entities){
-                writer.write(String.join(",",
-                        booking.getBookingID(),
-                        AppTools.localDateToString(booking.getBookingDate()),
-                        AppTools.localDateToString(booking.getStartDate()),
-                        AppTools.localDateToString(booking.getEndDate()),
-                        booking.getCustomerID(),
-                        booking.getServiceID()));
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(path + bookingPath))) {
+            for (Booking booking : entities) {
+                String line = booking.getBookingID() + ","
+                        + AppTools.localDateToString(booking.getBookingDate()) + ","
+                        + AppTools.localDateToString(booking.getStartDate()) + ","
+                        + AppTools.localDateToString(booking.getEndDate()) + ","
+                        + booking.getCustomerID() + ","
+                        + booking.getServiceID();
+
+                writer.write(line);
                 writer.newLine();
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
+
 }

@@ -11,11 +11,11 @@ public class ContractRepository implements IContactRepository {
     @Override
     public Set<Contract> readFile() {
         Set<Contract> contractList = new HashSet<>();
-        try(BufferedReader bufferedReader = new BufferedReader(new FileReader(path + contractPath))) {
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(path + contractPath))) {
             String line;
-            while ((line = bufferedReader.readLine()) != null){
+            while ((line = bufferedReader.readLine()) != null) {
                 String[] data = line.split(",");
-                if (data.length < 4){
+                if (data.length < 4) {
                     System.out.println("-> Skipping line " + line);
                     continue;
                 }
@@ -35,8 +35,8 @@ public class ContractRepository implements IContactRepository {
 
     @Override
     public void writeFile(Set<Contract> contractList) {
-        try (BufferedWriter bufferedWriter  = new BufferedWriter(new FileWriter(path + contractPath))){
-            for (Contract contract : contractList){
+        try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(path + contractPath))) {
+            for (Contract contract : contractList) {
                 String line = contract.getContractNum() + "," +
                         contract.getBookingID() + "," +
                         contract.getDepositAmmount() + "," +
@@ -46,7 +46,8 @@ public class ContractRepository implements IContactRepository {
             }
             System.out.println("-> Contract Save Successfully!");
         } catch (IOException e) {
-            System.out.println("-> ERROR While Saving Contract " + e.getMessage());;
+            System.out.println("-> ERROR While Saving Contract " + e.getMessage());
+            ;
         }
     }
 }

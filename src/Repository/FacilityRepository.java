@@ -35,7 +35,7 @@ public class FacilityRepository implements IFacilityRepository {
                     double rentalCost = Double.parseDouble(data[3]);
                     int maxPeople = Integer.parseInt(data[4]);
                     String rentalType = data[5];
-                    int usageCount = data.length > 6 ? Integer.parseInt(data[data.length - 1]) : 0; // Giá trị mặc định 0
+                    int usageCount = data.length > 6 ? Integer.parseInt(data[data.length - 1]) : 0;
 
                     if (facilityType.equalsIgnoreCase("Villa")) {
                         if (data.length < 9) {
@@ -76,7 +76,6 @@ public class FacilityRepository implements IFacilityRepository {
         return facilityMap;
     }
 
-    // Ghi dữ liệu vào file
     public void writeFile(LinkedHashMap<Facility, Integer> facilityList) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(path + facilityPath))) {
             for (Map.Entry<Facility, Integer> entry : facilityList.entrySet()) {

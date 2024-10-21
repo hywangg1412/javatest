@@ -48,22 +48,24 @@ public class CustomerRepository implements ICustomerRepository {
 
     @Override
     public void writeFile(ArrayList<Customer> entities) {
-        StringBuilder data = new StringBuilder();
-        for (Customer customer : entities) {
-            data.append(customer.getID()).append(",")
-                    .append(customer.getFullName()).append(",")
-                    .append(customer.getDOB()).append(",")
-                    .append(customer.isGender() ? "Male" : "Female").append(",")
-                    .append(customer.getCMND()).append(",")
-                    .append(customer.getPhoneNumber()).append(",")
-                    .append(customer.getEmail()).append(",")
-                    .append(customer.getAddress()).append(",")
-                    .append(customer.getCustomerType()).append("\n");
-        }
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(path + customerPath))) {
-            bw.write(data.toString());
+            for (Customer customer : entities) {
+                String line = customer.getID() + ","
+                        + customer.getFullName() + ","
+                        + customer.getDOB() + ","
+                        + (customer.isGender() ? "Male" : "Female") + ","
+                        + customer.getCMND() + ","
+                        + customer.getPhoneNumber() + ","
+                        + customer.getEmail() + ","
+                        + customer.getAddress() + ","
+                        + customer.getCustomerType();
+
+                bw.write(line);
+                bw.newLine();
+            }
         } catch (IOException e) {
             throw new RuntimeException("-> Error writing to file: " + e.getMessage(), e);
         }
     }
+
 }

@@ -158,7 +158,7 @@ public class BookingService implements IBookingService {
                 } else {
                     System.out.println("-> Booking not saved.");
                 }
-            } while (tools.validateStringInput("Do You Want To Continue Adding Booking (Y/N)", errMsg).equalsIgnoreCase("Y"));
+            } while (tools.validateStringInput("-> Do You Want To Continue Adding Booking (Y/N)", errMsg).equalsIgnoreCase("Y"));
         } catch (Exception e) {
             System.out.println("-> Error While Adding Booking: " + e.getMessage());
         }
