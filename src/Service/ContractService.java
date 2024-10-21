@@ -14,7 +14,7 @@ import java.util.Set;
 
 public class ContractService implements IContactService {
     private final AppTools tools;
-     Set<Contract> contractList;
+    Set<Contract> contractList;
     private final ContractRepository contractRepository;
     private final BookingRepository bookingRepository;
     private final FacilityService facilityService;
@@ -67,11 +67,11 @@ public class ContractService implements IContactService {
 
             String bookingID;
             do {
-                 bookingID = tools.validateID("Booking ID", "Invalid ID, try again", "^BK\\d{3}$");
-                 if (bookingService.findByID(bookingID) == null){
-                     System.out.println("-> Booking ID Not Found ");
-                 }
-            }while (bookingService.findByID(bookingID) == null);
+                bookingID = tools.validateID("Booking ID", "Invalid ID, try again", "^BK\\d{3}$");
+                if (bookingService.findByID(bookingID) == null) {
+                    System.out.println("-> Booking ID Not Found ");
+                }
+            } while (bookingService.findByID(bookingID) == null);
             Booking selectedBooking = bookingService.findByID(bookingID);
 
             if (selectedBooking == null) {
@@ -110,31 +110,26 @@ public class ContractService implements IContactService {
 
         long totalDays = ChronoUnit.DAYS.between(startDate, endDate);
 
-        try {
-            switch (foundFacility.getRentalType().toLowerCase()) {
-                case "day":
-                    return (totalDays * foundFacility.getRentalCost());
-                case "week":
-                    return ((totalDays / 7) * foundFacility.getRentalCost());
-                case "month":
-                    int yearDifference = endDate.getYear() - startDate.getYear();
-                    int monthDifference = endDate.getMonthValue() - startDate.getMonthValue();
+        double baseCost = 0, areaCost = 0;
 
-                    int duration = yearDifference * 12 + monthDifference;
+        switch (foundFacility.getRentalType().toLowerCase()) {
+            case "day" -> baseCost = totalDays * foundFacility.getRentalCost();
+            case "week" -> baseCost = (totalDays / 7) * foundFacility.getRentalCost();
+            case "month" -> baseCost = (totalDays / 30) * foundFacility.getRentalCost();
 
-                    if (startDate.getDayOfMonth() > endDate.getDayOfMonth()) {
-                        duration--;
-                    }
-                    return duration * foundFacility.getRentalCost();
-                default:
-                    System.out.println("-> Invalid rental type.");
-                    return 0;
-            }
-        } catch (Exception e) {
-            System.out.println("-> Error While Getting Duration: " + e.getMessage());
-            return 0;
+            default -> System.out.println("-> Invalid rental type.");
         }
+
+        if (foundFacility.getArea() < 100) {
+            areaCost = 0;
+        } else if (foundFacility.getArea() >= 100 && foundFacility.getArea() < 300) {
+            areaCost = (foundFacility.getArea() - 100) * 15;
+        } else {
+            areaCost = (foundFacility.getArea() - 300) * 25 + (200 * 15);
+        }
+        return (baseCost + areaCost) * foundFacility.getRentalCost();
     }
+
 
     @Override
     public void display() {

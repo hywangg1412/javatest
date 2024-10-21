@@ -11,13 +11,13 @@ public class AppTools {
     private static final Scanner scanner = new Scanner(System.in);
 
     // Get user input
-    public String getString(String prompt) {
+    public static String getString(String prompt) {
         System.out.print(prompt + ": ");
         return scanner.nextLine().trim();
     }
 
     // Validate string input
-    public String validateString(String prompt, String errorMsg) {
+    public static String validateString(String prompt, String errorMsg) {
         String input;
         while (true) {
             input = getString(prompt);
@@ -30,7 +30,7 @@ public class AppTools {
     }
 
     // Validate double input with minimum value
-    public double validateDouble(String prompt, String errorMsg, double minValue) {
+    public static double validateDouble(String prompt, String errorMsg, double minValue) {
         double value;
         while (true) {
             System.out.print(prompt + ": ");
@@ -55,7 +55,7 @@ public class AppTools {
     }
 
     // Validate integer input with optional minimum value
-    public int validateInteger(String prompt, String errorMsg, Integer minValue) {
+    public static int validateInteger(String prompt, String errorMsg, Integer minValue) {
         int value;
         while (true) {
             System.out.print(prompt + ": ");
@@ -79,9 +79,8 @@ public class AppTools {
         }
     }
 
-
     // Normalize names
-    public String normalizeName(String name) {
+    public static String normalizeName(String name) {
         String cleanedName = name.toLowerCase().replaceAll("[^\\p{L}\\d\\s]", "").trim();
         cleanedName = cleanedName.replaceAll("[,\\s]+", " ");
         StringJoiner normalized = new StringJoiner(" ");
@@ -94,12 +93,12 @@ public class AppTools {
     }
 
     // Print error messages
-    private void printErrorMessage(String message) {
+    private static void printErrorMessage(String message) {
         System.out.println("\u001B[31m" + message + "\u001B[0m");
     }
 
     // Validate string input with specific conditions
-    public String validateStringInput(String prompt, String errorMsg) {
+    public static String validateStringInput(String prompt, String errorMsg) {
         String input;
         while (true) {
             input = getString(prompt);
@@ -112,7 +111,7 @@ public class AppTools {
     }
 
     // Validate ID with regex
-    public String validateID(String prompt, String errorMsg, String regex) {
+    public static String validateID(String prompt, String errorMsg, String regex) {
         String input;
         while (true) {
             input = getString(prompt);
@@ -125,7 +124,7 @@ public class AppTools {
     }
 
     // Validate phone number
-    public String validatePhoneNumber(String prompt, String errorMsg) {
+    public static String validatePhoneNumber(String prompt, String errorMsg) {
         String input;
         while (true) {
             input = getString(prompt);
@@ -142,7 +141,7 @@ public class AppTools {
         try {
             return LocalDate.parse(dateString, DATE_FORMATTER);
         } catch (DateTimeParseException e) {
-            System.out.println("Invalid Date Format, Please Try (yyyy-MM-dd)");
+            printErrorMessage("Invalid Date Format, Please Try (yyyy-MM-dd)");
             return null;
         }
     }
@@ -153,7 +152,7 @@ public class AppTools {
     }
 
     // Validate email address
-    public String validateEmail(String prompt, String errorMsg) {
+    public static String validateEmail(String prompt, String errorMsg) {
         String input;
         while (true) {
             input = getString(prompt);
@@ -166,14 +165,14 @@ public class AppTools {
     }
 
     // Validate date of birth
-    public LocalDate validateDateOfBirth(String prompt, String errorMsg) {
+    public static LocalDate validateDateOfBirth(String prompt, String errorMsg) {
         LocalDate parsedDate;
         while (true) {
             System.out.print(prompt + ": ");
             String input = scanner.nextLine().trim();
 
             if (input.isEmpty()) {
-                System.out.println(errorMsg + " - Input cannot be empty.");
+                printErrorMessage(errorMsg + " - Input cannot be empty.");
                 continue;
             }
 
@@ -182,23 +181,23 @@ public class AppTools {
                 if (isAgeValid(parsedDate)) {
                     return parsedDate;
                 } else {
-                    System.out.println("You must be at least 18 years old.");
+                    printErrorMessage("You must be at least 18 years old.");
                 }
             } catch (DateTimeParseException e) {
-                System.out.println(errorMsg + " - Date must be in the format (yyyy-MM-dd)");
+                printErrorMessage(errorMsg + " - Date must be in the format (yyyy-MM-dd)");
             }
         }
     }
 
     // Validate booking date
-    public LocalDate validateBookingDate(String prompt, String errorMsg) {
+    public static LocalDate validateBookingDate(String prompt, String errorMsg) {
         LocalDate parsedDate;
         while (true) {
             System.out.print(prompt + ": ");
             String input = scanner.nextLine().trim();
 
             if (input.isEmpty()) {
-                System.out.println(errorMsg + " - Input cannot be empty.");
+                printErrorMessage(errorMsg + " - Input cannot be empty.");
                 continue;
             }
 
@@ -207,23 +206,23 @@ public class AppTools {
                 if (isFutureDate(parsedDate)) {
                     return parsedDate;
                 } else {
-                    System.out.println("The booking date must be in the future.");
+                    printErrorMessage("The booking date must be in the future.");
                 }
             } catch (DateTimeParseException e) {
-                System.out.println(errorMsg + " - Date must be in the format (yyyy-MM-dd)");
+                printErrorMessage(errorMsg + " - Date must be in the format (yyyy-MM-dd)");
             }
         }
     }
 
     // Validate start date
-    public LocalDate validateStartDate(LocalDate bookingDate, String prompt, String errorMsg) {
+    public static LocalDate validateStartDate(LocalDate bookingDate, String prompt, String errorMsg) {
         LocalDate parsedDate;
         while (true) {
             System.out.print(prompt + ": ");
             String input = scanner.nextLine().trim();
 
             if (input.isEmpty()) {
-                System.out.println(errorMsg + " - Input cannot be empty.");
+                printErrorMessage(errorMsg + " - Input cannot be empty.");
                 continue;
             }
 
@@ -232,23 +231,23 @@ public class AppTools {
                 if (parsedDate.isAfter(bookingDate)) {
                     return parsedDate;
                 } else {
-                    System.out.println("The start date must be after the booking date.");
+                    printErrorMessage("The start date must be after the booking date.");
                 }
             } catch (DateTimeParseException e) {
-                System.out.println(errorMsg + " - Date must be in the format (yyyy-MM-dd)");
+                printErrorMessage(errorMsg + " - Date must be in the format (yyyy-MM-dd)");
             }
         }
     }
 
     // Validate end date
-    public LocalDate validateEndDate(LocalDate startDate, String prompt, String errorMsg) {
+    public static LocalDate validateEndDate(LocalDate startDate, String prompt, String errorMsg) {
         LocalDate parsedDate;
         while (true) {
             System.out.print(prompt + ": ");
             String input = scanner.nextLine().trim();
 
             if (input.isEmpty()) {
-                System.out.println(errorMsg + " - Input cannot be empty.");
+                printErrorMessage(errorMsg + " - Input cannot be empty.");
                 continue;
             }
 
@@ -257,22 +256,21 @@ public class AppTools {
                 if (parsedDate.isAfter(startDate)) {
                     return parsedDate;
                 } else {
-                    System.out.println("The end date must be after the start date.");
+                    printErrorMessage("The end date must be after the start date.");
                 }
             } catch (DateTimeParseException e) {
-                System.out.println(errorMsg + " - Date must be in the format (yyyy-MM-dd)");
+                printErrorMessage(errorMsg + " - Date must be in the format (yyyy-MM-dd)");
             }
         }
     }
 
-
     // Check if the date is in the future
-    private boolean isFutureDate(LocalDate date) {
+    private static boolean isFutureDate(LocalDate date) {
         return date.isAfter(LocalDate.now());
     }
 
     // Check if age is valid (18 years or older)
-    private boolean isAgeValid(LocalDate BOD) {
+    private static boolean isAgeValid(LocalDate BOD) {
         LocalDate today = LocalDate.now();
         int age = today.getYear() - BOD.getYear();
         if (today.getMonthValue() < BOD.getMonthValue() ||
@@ -282,54 +280,21 @@ public class AppTools {
         return age >= 18;
     }
 
-    // Validate gender input
-    public String validateGender(String prompt, String errorMsg) {
+    // Validate gender
+    public static String validateGender(String prompt, String errorMsg) {
         String input;
         while (true) {
-            System.out.print(prompt + ": ");
-            input = scanner.nextLine().trim().toLowerCase();
-
-            if (input.isEmpty()) {
-                System.out.println(errorMsg + " - Input cannot be empty.");
-                continue;
-            }
-
-            if (input.equals("male") || input.equals("m")) {
-                return "Male";
-            } else if (input.equals("female") || input.equals("f")) {
-                return "Female";
+            input = getString(prompt);
+            if (input.isEmpty() || (!input.equalsIgnoreCase("Male") && !input.equalsIgnoreCase("Female"))) {
+                printErrorMessage(errorMsg + " - Please enter either 'Male' or 'Female'.");
             } else {
-                System.out.println(errorMsg + " - Please enter 'Male (M)' or 'Female (F)'.");
-            }
-        }
-    }
-
-    // Validate salary input
-    public double validateSalary(String prompt, String errorMsg) {
-        double salary;
-        while (true) {
-            System.out.print(prompt + ": ");
-            String input = scanner.nextLine().trim();
-
-            if (input.isEmpty()) {
-                System.out.println(errorMsg + " - Input cannot be empty.");
-                continue;
-            }
-
-            try {
-                salary = Double.parseDouble(input);
-                if (salary > 0) {
-                    return salary;
-                }
-                System.out.println("Salary must be greater than 0.");
-            } catch (NumberFormatException e) {
-                System.out.println(errorMsg + " - Salary must be a valid number.");
+                return input;
             }
         }
     }
 
     // Validate ID card number
-    public String validateIDCard(String prompt, String errorMsg) {
+    public static String validateIDCard(String prompt, String errorMsg) {
         String input;
         while (true) {
             input = getString(prompt);

@@ -11,13 +11,11 @@ import java.util.*;
 
 public class FacilityService implements IFacilityService {
     private final FacilityRepository faciRepository;
-    private final AppTools tools;
     LinkedHashMap<Facility, Integer> currentFacilities;
     private final String errMsg;
 
     public FacilityService() {
         faciRepository = new FacilityRepository();
-        tools = new AppTools();
         currentFacilities = faciRepository.readFile();
         errMsg = "-> Invalid Input, Try Again";
     }
@@ -69,8 +67,7 @@ public class FacilityService implements IFacilityService {
 
             for (Map.Entry<Facility, Integer> entry : currentFacilities.entrySet()) {
                 Facility facility = entry.getKey();
-                if (facility instanceof Villa) {
-                    Villa villa = (Villa) facility;
+                if (facility instanceof Villa villa) {
                     System.out.printf("| %-15s | %-20s | %-15.2f | %-15.2f | %-12d | %-15s | %-15s | %-15d | %-15.2f |%n",
                             villa.getFacilityID(), villa.getFacilityName(), villa.getArea(), villa.getRentalCost(),
                             villa.getMaxPeople(), villa.getRentalType(), villa.getRoomStandard(),
@@ -93,8 +90,7 @@ public class FacilityService implements IFacilityService {
 
             for (Map.Entry<Facility, Integer> entry : currentFacilities.entrySet()) {
                 Facility facility = entry.getKey();
-                if (facility instanceof House) {
-                    House house = (House) facility;
+                if (facility instanceof House house) {
                     System.out.printf("| %-15s | %-20s | %-15.2f | %-15.2f | %-12d | %-15s | %-15s | %-15d |%n",
                             house.getFacilityID(), house.getFacilityName(), house.getArea(), house.getRentalCost(),
                             house.getMaxPeople(), house.getRentalType(), house.getRoomStandard(), house.getNumberOfFloor());
@@ -116,8 +112,7 @@ public class FacilityService implements IFacilityService {
 
             for (Map.Entry<Facility, Integer> entry : currentFacilities.entrySet()) {
                 Facility facility = entry.getKey();
-                if (facility instanceof Room) {
-                    Room room = (Room) facility;
+                if (facility instanceof Room room) {
                     System.out.printf("| %-15s | %-20s | %-15.2f | %-15.2f | %-12d | %-15s | %-20s |%n",
                             room.getFacilityID(), room.getFacilityName(), room.getArea(), room.getRentalCost(),
                             room.getMaxPeople(), room.getRentalType(), room.getFreeService());
@@ -175,40 +170,40 @@ public class FacilityService implements IFacilityService {
             String ID;
             do {
                 do {
-                    ID = tools.validateID(facilityType + " ID", "ID Must Follow SVxx-xxxx", "SV(VL|HO|RO)-\\d{4}");
+                    ID = View.AppTools.validateID(facilityType + " ID", "ID Must Follow SVxx-xxxx", "SV(VL|HO|RO)-\\d{4}");
                     if (findByID(ID) != null) {
                         System.out.println("-> ID Already Exist, Try New One");
                     }
                 } while (findByID(ID) != null);
 
-                String facilityName = tools.validateStringInput(facilityType + " Name", errMsg);
+                String facilityName = View.AppTools.validateStringInput(facilityType + " Name", errMsg);
 
-                double area = tools.validateDouble("Area", errMsg, 30);
+                double area = View.AppTools.validateDouble("Area", errMsg, 30);
 
-                double rentalCost = tools.validateDouble("Rental Cost", errMsg, 0);
+                double rentalCost = View.AppTools.validateDouble("Rental Cost", errMsg, 0);
                 int maxPeople;
                 do {
-                    maxPeople = tools.validateInteger("Max People", errMsg, 0);
+                    maxPeople = View.AppTools.validateInteger("Max People", errMsg, 0);
                 } while (maxPeople > 20);
 
                 String rentalType;
                 do {
-                    rentalType = tools.validateStringInput("Rental Type", errMsg);
+                    rentalType = View.AppTools.validateStringInput("Rental Type", errMsg);
                 } while (!rentalType.equalsIgnoreCase("day") && !rentalType.equalsIgnoreCase("week") && !rentalType.equalsIgnoreCase("month"));
 
                 Facility newFacility = null;
 
                 if (facilityClass == Villa.class) {
-                    String roomStandard = tools.validateStringInput("Room Standard", errMsg);
-                    double poolArea = tools.validateDouble("Pool Area", errMsg, 30);
-                    int numberOfFloor = tools.validateInteger("Number Of Floor", errMsg, 0);
+                    String roomStandard = View.AppTools.validateStringInput("Room Standard", errMsg);
+                    double poolArea = View.AppTools.validateDouble("Pool Area", errMsg, 30);
+                    int numberOfFloor = View.AppTools.validateInteger("Number Of Floor", errMsg, 0);
                     newFacility = new Villa(ID, facilityName, area, rentalCost, maxPeople, rentalType, roomStandard, poolArea, numberOfFloor);
                 } else if (facilityClass == House.class) {
-                    String roomStandard = tools.validateStringInput("Room Standard", errMsg);
-                    int numberOfFloor = tools.validateInteger("Number Of Floor", errMsg, 0);
+                    String roomStandard = View.AppTools.validateStringInput("Room Standard", errMsg);
+                    int numberOfFloor = View.AppTools.validateInteger("Number Of Floor", errMsg, 0);
                     newFacility = new House(ID, facilityName, area, rentalCost, maxPeople, rentalType, roomStandard, numberOfFloor);
                 } else if (facilityClass == Room.class) {
-                    String freeService = tools.validateStringInput("Free Service", errMsg);
+                    String freeService = View.AppTools.validateStringInput("Free Service", errMsg);
                     newFacility = new Room(ID, facilityName, area, rentalCost, maxPeople, rentalType, freeService);
                 }
 
@@ -219,9 +214,9 @@ public class FacilityService implements IFacilityService {
                     incrementUsage(newFacility);
                 }
 
-            } while (tools.validateStringInput("-> Do You Want To Continue (Y/N)", "Invalid Input, Try Again").equalsIgnoreCase("Y"));
+            } while (View.AppTools.validateStringInput("-> Do You Want To Continue (Y/N)", "Invalid Input, Try Again").equalsIgnoreCase("Y"));
 
-            if (tools.validateStringInput("-> Do you want to save changes to file (Y/N): ", errMsg).equalsIgnoreCase("Y")) {
+            if (View.AppTools.validateStringInput("-> Do you want to save changes to file (Y/N): ", errMsg).equalsIgnoreCase("Y")) {
                 save();
             }
         } catch (Exception e) {
@@ -262,7 +257,7 @@ public class FacilityService implements IFacilityService {
         String faciID;
         try {
             do {
-                faciID = tools.validateID("Facility ID", "ID Must Follow SVxx-xxxx", "SV(VL|HO|RO)-\\d{4}");
+                faciID = View.AppTools.validateID("Facility ID", "ID Must Follow SVxx-xxxx", "SV(VL|HO|RO)-\\d{4}");
                 Facility facility = findByID(faciID);
                 if (facility != null) {
                     return faciID;
@@ -286,13 +281,4 @@ public class FacilityService implements IFacilityService {
         }
     }
 
-    public void resetUsage(Facility facility) {
-        try {
-            if (currentFacilities.containsKey(facility)) {
-                currentFacilities.put(facility, 0);
-            }
-        } catch (Exception e) {
-            throw new RuntimeException("-> Error While Reset Usage Count - " + e.getMessage());
-        }
-    }
 }

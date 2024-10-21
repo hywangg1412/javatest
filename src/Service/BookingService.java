@@ -7,14 +7,12 @@ import View.AppTools;
 
 import java.time.LocalDate;
 
-import java.time.temporal.ChronoUnit;
 import java.util.TreeSet;
 
 public class BookingService implements IBookingService {
     public TreeSet<Booking> bookingList;
     private final BookingRepository bkRepository;
 
-    private final AppTools tools;
     private final String errMsg;
 
     private final CustomerService customerService;
@@ -23,8 +21,6 @@ public class BookingService implements IBookingService {
     public BookingService() {
         bkRepository = new BookingRepository();
         bookingList = bkRepository.readFile();
-
-        tools = new AppTools();
 
         customerService = new CustomerService();
         facilityService = new FacilityService();
@@ -129,15 +125,15 @@ public class BookingService implements IBookingService {
 
                 String bookingID;
                 do {
-                    bookingID = tools.validateID("Booking ID", errMsg, "^BK\\d{3}$");
+                    bookingID = AppTools.validateID("Booking ID", errMsg, "^BK\\d{3}$");
                     if (findByID(bookingID) != null){
                         System.out.println("-> Duplicated ID , Try Again.");
                     }
                 }while (findByID(bookingID) != null);
 
-                LocalDate bookingDate = tools.validateBookingDate("Booking Date", errMsg);
-                LocalDate startDate = tools.validateStartDate(bookingDate, "Start Date", errMsg);
-                LocalDate endDate = tools.validateEndDate(startDate, "End Date", errMsg);
+                LocalDate bookingDate = AppTools.validateBookingDate("Booking Date", errMsg);
+                LocalDate startDate = AppTools.validateStartDate(bookingDate, "Start Date", errMsg);
+                LocalDate endDate = AppTools.validateEndDate(startDate, "End Date", errMsg);
 
                 add(new Booking(bookingID, AppTools.localDateToString(bookingDate), AppTools.localDateToString(startDate), AppTools.localDateToString(endDate), cusID, faciID));
 
@@ -153,12 +149,12 @@ public class BookingService implements IBookingService {
                 }
 
                 // Save
-                if (tools.validateStringInput("-> Do you want to save changes to file (Y/N): ", errMsg).equalsIgnoreCase("Y")) {
+                if (AppTools.validateStringInput("-> Do you want to save changes to file (Y/N): ", errMsg).equalsIgnoreCase("Y")) {
                     save();
                 } else {
                     System.out.println("-> Booking not saved.");
                 }
-            } while (tools.validateStringInput("-> Do You Want To Continue Adding Booking (Y/N)", errMsg).equalsIgnoreCase("Y"));
+            } while (AppTools.validateStringInput("-> Do You Want To Continue Adding Booking (Y/N)", errMsg).equalsIgnoreCase("Y"));
         } catch (Exception e) {
             System.out.println("-> Error While Adding Booking: " + e.getMessage());
         }

@@ -20,12 +20,10 @@ public class FurmaResortApp extends Menu {
                     "Exit"};
 
     private String errMsg;
-    private AppTools tools;
 
     public FurmaResortApp() {
         super(MENU_OPTION, MENU_TILTE);
         errMsg = "-> Invalid Input, Try Again";
-        tools = new AppTools();
     }
 
     public void execute(int n) {
@@ -60,11 +58,11 @@ public class FurmaResortApp extends Menu {
                         case 2 -> empService.addEmployee();
                         case 3 -> {
                             try {
-                                String editID = tools.validateID("Enter Employee ID Want To Edit", "ID Must Follow EMP-0000", "EMP-\\d{4}");
+                                String editID = AppTools.validateID("Enter Employee ID Want To Edit", "ID Must Follow EMP-0000", "EMP-\\d{4}");
                                 Employee foundEmp = empService.findByID(editID);
                                 if (foundEmp == null) {
                                     System.out.println("-> Not Found Employee With ID: " + editID);
-                                    boolean createNew = tools.validateStringInput("-> Do You Want To Create New Employee (Y/N)", errMsg).equalsIgnoreCase("Y");
+                                    boolean createNew = AppTools.validateStringInput("-> Do You Want To Create New Employee (Y/N)", errMsg).equalsIgnoreCase("Y");
                                     if (createNew) {
                                         empService.addEmployee();
                                     } else {
@@ -104,11 +102,11 @@ public class FurmaResortApp extends Menu {
                         case 2 -> customerService.addCustomer();
                         case 3 -> {
                             try {
-                                String ID = tools.validateID("Customer ID", "ID Must Follow CUS-0000", "CUS-\\d{4}");
+                                String ID = AppTools.validateID("Customer ID", "ID Must Follow CUS-0000", "CUS-\\d{4}");
                                 Customer foundCustomer = customerService.findByID(ID);
                                 if (foundCustomer == null) {
                                     System.out.println("-> Not Found Customer With ID - " + ID);
-                                    boolean createNew = tools.validateStringInput("-> Do you Want To Create New Customer (Y/N)", errMsg).equalsIgnoreCase("Y");
+                                    boolean createNew = AppTools.validateStringInput("-> Do you Want To Create New Customer (Y/N)", errMsg).equalsIgnoreCase("Y");
                                     if (createNew) {
                                         customerService.addCustomer();
                                     } else {
@@ -199,11 +197,11 @@ public class FurmaResortApp extends Menu {
                         case 4 -> contractService.display();
                         case 5 -> {
                             try {
-                                int editID = tools.validateInteger("Enter Contract ID to edit", errMsg, 0);
+                                int editID = AppTools.validateInteger("Enter Contract ID to edit", errMsg, 0);
                                 Contract foundContract = contractService.findByContractNum(editID);
                                 if (foundContract == null) {
                                     System.out.println("-> Contract ID not found.");
-                                    boolean createNew = tools.validateStringInput("Do you want to create a new contract? (y/n)", errMsg).equalsIgnoreCase("y");
+                                    boolean createNew = AppTools.validateStringInput("Do you want to create a new contract? (y/n)", errMsg).equalsIgnoreCase("y");
                                     if (createNew) {
                                         contractService.addContract();
                                     } else {

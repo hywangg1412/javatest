@@ -16,8 +16,6 @@ public class PromotionService implements IPromotionService {
     CustomerService customerService;
     PromotionRepository promotionRepository;
 
-    AppTools tools;
-
     Stack<Customer> customersWithVouchers;
     List<Double> voucherList;
 
@@ -32,8 +30,6 @@ public class PromotionService implements IPromotionService {
         voucherList = new ArrayList<>();
 
         promotionRepository.readFile(customersWithVouchers, voucherList);
-
-        tools = new AppTools();
 
         errMsg = "-> Invalid Input, Try Again";
     }
@@ -69,14 +65,14 @@ public class PromotionService implements IPromotionService {
     }
 
     public void inputYear() {
-        int year = tools.validateInteger("Enter Year You Want To View", errMsg, 0);
+        int year = AppTools.validateInteger("Enter Year You Want To View", errMsg, 0);
         showCustomerByYear(year);
     }
 
     public void inputVoucher() {
-        int v10 = tools.validateInteger("Enter Number Of 10% Voucher", errMsg, 0);
-        int v20 = tools.validateInteger("Enter Number Of 20% Voucher", errMsg, 0);
-        int v50 = tools.validateInteger("Enter Number Of 50% Voucher", errMsg, 0);
+        int v10 = AppTools.validateInteger("Enter Number Of 10% Voucher", errMsg, 0);
+        int v20 = AppTools.validateInteger("Enter Number Of 20% Voucher", errMsg, 0);
+        int v50 = AppTools.validateInteger("Enter Number Of 50% Voucher", errMsg, 0);
 
         if (v10 + v20 + v50 == 0) {
             System.out.println("-> There No Voucher To Distribute");
@@ -109,9 +105,6 @@ public class PromotionService implements IPromotionService {
             return;
         }
         List<Customer> tempList = new ArrayList<>(customersWithVouchers);
-//        while (!customersWithVouchers.isEmpty()){
-//            Customer currentCustomer = customersWithVouchers.pop();
-//        }
         try {
             for (Customer customer : tempList) {
                 if (v10 > 0) {
@@ -217,5 +210,4 @@ public class PromotionService implements IPromotionService {
     public Object findByID(String ID) {
         return null;
     }
-
 }

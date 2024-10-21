@@ -10,7 +10,6 @@ import java.util.ArrayList;
 
 public class CustomerService implements ICustomerService {
     private final CustomerRepository customerRepository;
-    private final AppTools tools;
     private final String errMsg;
     private final String updatedMsg;
 
@@ -27,7 +26,6 @@ public class CustomerService implements ICustomerService {
     public CustomerService() {
         customerRepository = new CustomerRepository();
         currentCustomer = customerRepository.readFile();
-        tools = new AppTools();
         errMsg = "-> Invalid Input, Try Again";
         updatedMsg = "Updated Successfully !!!";
     }
@@ -101,7 +99,7 @@ public class CustomerService implements ICustomerService {
             }
             System.out.println((totalField + 1) + ". Finish Customize");
 
-            int choice = tools.validateInteger("Choose Your Option", errMsg, 0);
+            int choice = AppTools.validateInteger("Choose Your Option", errMsg, 0);
 
             if (choice == totalField + 1) {
                 isEditing = false;
@@ -120,42 +118,42 @@ public class CustomerService implements ICustomerService {
                     case 1 -> {
                         String ID;
                         do {
-                            ID = tools.validateID("Customer ID", "ID Must Follow CUS-0000", "CUS-\\d{4}");
+                            ID = AppTools.validateID("Customer ID", "ID Must Follow CUS-0000", "CUS-\\d{4}");
                             if (findByID(ID) != null){
                                 System.out.println("-> Duplicated ID, Try Again.");
                             }
                         } while (findByID(ID) != null);
                     }
                     case 2 -> {
-                        String name = tools.normalizeName(tools.validateStringInput("Customer Full Name", errMsg));
+                        String name = AppTools.normalizeName(AppTools.validateStringInput("Customer Full Name", errMsg));
                         selectedField.set(c,name);
                     }
                     case 3 -> {
-                        LocalDate DOB = tools.validateDateOfBirth("Customer Date Of Birth", errMsg);
+                        LocalDate DOB = AppTools.validateDateOfBirth("Customer Date Of Birth", errMsg);
                         selectedField.set(c,DOB);
                     }
                     case 4 -> {
-                        String CMND = tools.validateIDCard("Customer CMND", errMsg);
+                        String CMND = AppTools.validateIDCard("Customer CMND", errMsg);
                         selectedField.set(c,CMND);
                     }
                     case 5 ->{
-                        boolean isMale = tools.validateGender("Gender (Male (M) / Female (F))", errMsg).equalsIgnoreCase("Male");
+                        boolean isMale = AppTools.validateGender("Gender (Male (M) / Female (F))", errMsg).equalsIgnoreCase("Male");
                         selectedField.set(c,isMale);
                     }
                     case 6 ->{
-                        String phoneNum = tools.validatePhoneNumber("Customer Phone Number", errMsg);
+                        String phoneNum = AppTools.validatePhoneNumber("Customer Phone Number", errMsg);
                         selectedField.set(c,phoneNum);
                     }
                     case 7 ->{
-                        String email = tools.validateEmail("Customer Email", errMsg);
+                        String email = AppTools.validateEmail("Customer Email", errMsg);
                         selectedField.set(c,email);
                     }
                     case 8 ->{
-                        String address = tools.validateStringInput("Customer Address", errMsg);
+                        String address = AppTools.validateStringInput("Customer Address", errMsg);
                         selectedField.set(c,address);
                     }
                     case 9 ->{
-                        String type = tools.validateStringInput("Customer Type", errMsg);
+                        String type = AppTools.validateStringInput("Customer Type", errMsg);
                         selectedField.set(c,type);
                     }
                     default -> System.out.println(errMsg);
@@ -186,7 +184,7 @@ public class CustomerService implements ICustomerService {
         String cusID;
         try {
             do {
-                cusID = tools.validateID("Customer ID", errMsg, "CUS-\\d{4}");
+                cusID = AppTools.validateID("Customer ID", errMsg, "CUS-\\d{4}");
                 if (findByID(cusID) == null) {
                     System.out.println("-> ID Not Found, Try Again!");
                 }
@@ -203,29 +201,29 @@ public class CustomerService implements ICustomerService {
             try {
                 String ID;
                 do {
-                    ID = tools.validateID("Customer ID", "ID Must Follow CUS-0000", "CUS-\\d{4}");
+                    ID = AppTools.validateID("Customer ID", "ID Must Follow CUS-0000", "CUS-\\d{4}");
                     if (findByID(ID) != null){
                         System.out.println("-> Duplicated ID, Try Again.");
                     }
                 } while (findByID(ID) != null);
 
-                String name = tools.normalizeName(tools.validateStringInput("Customer Full Name", errMsg));
-                LocalDate DOB = tools.validateDateOfBirth("Customer Date Of Birth", errMsg);
-                String CMND = tools.validateIDCard("Customer CMND", errMsg);
-                boolean isMale = tools.validateGender("Gender (Male (M) / Female (F))", errMsg).equalsIgnoreCase("Male");
-                String phoneNum = tools.validatePhoneNumber("Customer Phone Number", errMsg);
-                String email = tools.validateEmail("Customer Email", errMsg);
-                String address = tools.validateStringInput("Customer Address", errMsg);
-                String type = tools.validateStringInput("Customer Type", errMsg);
+                String name = AppTools.normalizeName(AppTools.validateStringInput("Customer Full Name", errMsg));
+                LocalDate DOB = AppTools.validateDateOfBirth("Customer Date Of Birth", errMsg);
+                String CMND = AppTools.validateIDCard("Customer CMND", errMsg);
+                boolean isMale = AppTools.validateGender("Gender (Male (M) / Female (F))", errMsg).equalsIgnoreCase("Male");
+                String phoneNum = AppTools.validatePhoneNumber("Customer Phone Number", errMsg);
+                String email = AppTools.validateEmail("Customer Email", errMsg);
+                String address = AppTools.validateStringInput("Customer Address", errMsg);
+                String type = AppTools.validateStringInput("Customer Type", errMsg);
 
                 add(new Customer(ID, name, DOB, isMale, CMND, phoneNum, email, address, type));
 
-                if (tools.validateStringInput("-> Do you want to save the customer data to file (Y/N)", errMsg).equalsIgnoreCase("Y")) {
+                if (AppTools.validateStringInput("-> Do you want to save the customer data to file (Y/N)", errMsg).equalsIgnoreCase("Y")) {
                     save();
                 }
             } catch (Exception e) {
                 System.out.println("Error adding customer: " + e.getMessage());
             }
-        } while (tools.validateStringInput("-> Do you want to continue adding customers (Y/N)", errMsg).equalsIgnoreCase("Y"));
+        } while (AppTools.validateStringInput("-> Do you want to continue adding customers (Y/N)", errMsg).equalsIgnoreCase("Y"));
     }
 }

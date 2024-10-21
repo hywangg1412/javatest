@@ -99,7 +99,7 @@ public class EmployeeService implements IEmployeeService {
             }
             System.out.println((totalField + 1) + ". Finish Customize");
 
-            int choice = tools.validateInteger("Choose Your Option", errMsg, 0);
+            int choice = AppTools.validateInteger("Choose Your Option", errMsg, 0);
 
             if (choice == totalField + 1) {
                 isEditing = false;
@@ -119,7 +119,7 @@ public class EmployeeService implements IEmployeeService {
                     case 1 -> {
                         String ID;
                         do {
-                            ID = tools.validateID("EmployeeID", "ID Must Follow EMP-0000", "EMP-\\d{4}");
+                            ID = AppTools.validateID("EmployeeID", "ID Must Follow EMP-0000", "EMP-\\d{4}");
                             if (findByID(ID) != null){
                                 System.out.println("-> Duplicated ID, Try Again.");
                             }
@@ -127,40 +127,40 @@ public class EmployeeService implements IEmployeeService {
                         selectedField.set(e, ID);
                     }
                     case 2 -> {
-                        String name = tools.normalizeName(tools.validateStringInput("Employee Full Name", errMsg));
+                        String name = AppTools.normalizeName(AppTools.validateStringInput("Employee Full Name", errMsg));
                         selectedField.set(e, name);
                     }
                     case 3 -> {
-                        LocalDate DOB = tools.validateDateOfBirth("Employee Date Of Birth", errMsg);
+                        LocalDate DOB = AppTools.validateDateOfBirth("Employee Date Of Birth", errMsg);
                         selectedField.set(e, DOB);
                     }
                     case 4 -> {
 
-                        String CMND = tools.validateIDCard("Employee CMND", errMsg);
+                        String CMND = AppTools.validateIDCard("Employee CMND", errMsg);
                         selectedField.set(e, CMND);
                     }
                     case 5 -> {
-                        boolean isMale = tools.validateGender("Gender (Male (M) / Female (F))", errMsg).equals("Male");
+                        boolean isMale = AppTools.validateGender("Gender (Male (M) / Female (F))", errMsg).equals("Male");
                         selectedField.set(e, isMale);
                     }
                     case 6 -> {
-                        String phoneNum = tools.validatePhoneNumber("Employee Phone Number", errMsg);
+                        String phoneNum = AppTools.validatePhoneNumber("Employee Phone Number", errMsg);
                         selectedField.set(e, phoneNum);
                     }
                     case 7 -> {
-                        String email = tools.validateEmail("Employee Email", errMsg);
+                        String email = AppTools.validateEmail("Employee Email", errMsg);
                         selectedField.set(e, email);
                     }
                     case 8 -> {
-                        String degree = tools.validateString("Employee Degree", errMsg);
+                        String degree = AppTools.validateString("Employee Degree", errMsg);
                         selectedField.set(e, degree);
                     }
                     case 9 -> {
-                        String position = tools.validateStringInput("Employee Position", errMsg);
+                        String position = AppTools.validateStringInput("Employee Position", errMsg);
                         selectedField.set(e, position);
                     }
                     case 10 -> {
-                        double salary = tools.validateSalary("Employee Salary", errMsg);
+                        double salary = AppTools.validateDouble("Employee Salary", errMsg,0);
                         selectedField.set(e, salary);
                     }
                     default -> System.out.println(errMsg);
@@ -178,31 +178,31 @@ public class EmployeeService implements IEmployeeService {
             try {
                 String ID;
                 do {
-                    ID = tools.validateID("EmployeeID", "ID Must Follow EMP-0000", "EMP-\\d{4}");
+                    ID = AppTools.validateID("EmployeeID", "ID Must Follow EMP-0000", "EMP-\\d{4}");
                     if (findByID(ID) != null) {
                         System.out.println("-> Duplicate ID , Try Again");
                     }
                 } while (findByID(ID) != null);
 
-                String name = tools.normalizeName(tools.validateStringInput("Employee Full Name", errMsg));
-                LocalDate DOB = tools.validateDateOfBirth("Employee Date Of Birth", errMsg);
-                String CMND = tools.validateIDCard("Employee CMND", errMsg);
-                boolean isMale = tools.validateGender("Gender (Male (M) / Female (F))", errMsg).equals("Male");
-                String phoneNum = tools.validatePhoneNumber("Employee Phone Number", errMsg);
-                String email = tools.validateEmail("Employee Email", errMsg);
-                String degree = tools.validateString("Employee Degree", errMsg);
-                String position = tools.validateStringInput("Employee Position", errMsg);
-                double salary = tools.validateSalary("Employee Salary", errMsg);
+                String name = AppTools.normalizeName(AppTools.validateStringInput("Employee Full Name", errMsg));
+                LocalDate DOB = AppTools.validateDateOfBirth("Employee Date Of Birth", errMsg);
+                String CMND = AppTools.validateIDCard("Employee CMND", errMsg);
+                boolean isMale = AppTools.validateGender("Gender (Male (M) / Female (F))", errMsg).equals("Male");
+                String phoneNum = AppTools.validatePhoneNumber("Employee Phone Number", errMsg);
+                String email = AppTools.validateEmail("Employee Email", errMsg);
+                String degree = AppTools.validateString("Employee Degree", errMsg);
+                String position = AppTools.validateStringInput("Employee Position", errMsg);
+                double salary = AppTools.validateDouble("Employee Salary", errMsg,0);
 
                 add(new Employee(ID, name, DOB, isMale, CMND, phoneNum, email, degree, position, salary));
 
-                if (tools.validateStringInput("-> Do you want to save the employee data to file (Y/N)", errMsg).equalsIgnoreCase("Y")) {
+                if (AppTools.validateStringInput("-> Do you want to save the employee data to file (Y/N)", errMsg).equalsIgnoreCase("Y")) {
                     save();
                 }
             } catch (Exception e) {
                 System.out.println("-> Error adding employee: " + e.getMessage());
             }
-        } while (tools.validateStringInput("-> Do you want to continue adding employees (Y/N)", errMsg).equalsIgnoreCase("Y"));
+        } while (AppTools.validateStringInput("-> Do you want to continue adding employees (Y/N)", errMsg).equalsIgnoreCase("Y"));
     }
 
     @Override
