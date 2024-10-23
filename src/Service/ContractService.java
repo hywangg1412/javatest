@@ -87,11 +87,10 @@ public class ContractService implements IContactService {
 
             double depositAmount;
             double totalAmount;
-            display();
             do {
                 depositAmount = AppTools.validateDouble("Deposit Amount", "Invalid amount, try again", 0);
                 totalAmount = getTotalPayment(bookingID) - depositAmount;
-                display();
+                System.out.println("Total Payment : " + totalAmount);
 
                 if (totalAmount <= 0) {
                     System.out.println("-> Invalid Total Amount, Lower Your Deposit Amount ");
