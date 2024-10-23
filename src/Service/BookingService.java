@@ -125,9 +125,6 @@ public class BookingService implements IBookingService {
                         AppTools.localDateToString(endDate), cusID, faciID));
 
                 Facility foundFacility = facilityService.findByID(faciID);
-                if (foundFacility != null) {
-                    Integer usageCount = facilityService.getCurrentFacilities().getOrDefault(foundFacility, 0) + 1;
-                }
 
                 if (AppTools.validateStringInput("-> Do you want to save changes to file (Y/N): ", errMsg).equalsIgnoreCase("Y")) {
                     save();
@@ -139,5 +136,6 @@ public class BookingService implements IBookingService {
             System.out.println("-> Error While Adding Booking: " + e.getMessage());
         }
     }
+
 
 }

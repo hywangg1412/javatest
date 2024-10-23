@@ -85,8 +85,18 @@ public class ContractService implements IContactService {
                 }
             } while (findByContractNum(contractNum) != null);
 
-            double depositAmount = AppTools.validateDouble("Deposit Amount", "Invalid amount, try again", 0);
-            double totalAmount = getTotalPayment(bookingID) - depositAmount;
+            double depositAmount;
+            double totalAmount;
+            display();
+            do {
+                depositAmount = AppTools.validateDouble("Deposit Amount", "Invalid amount, try again", 0);
+                totalAmount = getTotalPayment(bookingID) - depositAmount;
+                display();
+
+                if (totalAmount <= 0) {
+                    System.out.println("-> Invalid Total Amount, Lower Your Deposit Amount ");
+                }
+            } while (totalAmount <= 0);
             Contract newContract = new Contract(contractNum, bookingID, depositAmount, totalAmount);
             add(newContract);
             System.out.println("-> Contract created successfully with Contract Number: " + contractNum);
